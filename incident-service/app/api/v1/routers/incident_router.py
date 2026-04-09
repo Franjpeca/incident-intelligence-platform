@@ -15,6 +15,7 @@ from app.api.v1.controllers.incident_controller import (
     update_incident_status_controller,
     delete_incident_controller,
     update_incident_controller,
+    analyze_incident_controller,
 )
 
 router = APIRouter(prefix="/api/v1/incidents", tags=["incidents"])
@@ -71,3 +72,13 @@ def update_incident(incident_id: int, data: IncidentUpdateRequest, db: Session =
         raise HTTPException(status_code=404, detail="Error al borrar. Incidencia no encontrada")
 
     return incident
+
+# Establecemos la ruta para usar el analisis usando LLM
+@router.post("/{incident_id}/analysis")
+def analyze_incident(incident_id: int, db: Session = Depends(get_db)):
+    analysis = analyze_incident_controller(incident_id, db)
+
+    if analysis is None:
+        raise HTTPException(status_code=404, detail="Incident not found")
+
+    return analysis
