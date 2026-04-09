@@ -27,5 +27,13 @@ services:
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
       LLM_SERVICE_URL: http://llm-service:8001
 
+  # Microservicio de incidencias
+  llm-service:
+    build: ./llm-service
+    container_name: llm-service
+    ports:
+      - "8001:8001"
+
+
 volumes:
   postgres_data:
