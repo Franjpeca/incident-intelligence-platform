@@ -79,5 +79,14 @@ def analyze_incident(incident_id: int, db: Session):
         return None
 
     text_to_analyze = f"Title: {incident.title}\nDescription: {incident.description}"
+    analysis = analyze_text_with_llm(text_to_analyze)
 
-    return analyze_text_with_llm(text_to_analyze)
+    incident.ai_summary = analysis["summary"]
+    incident.category = analysis["category"]
+    incident.priority = analysis["priority"]
+    incident.ai_confidence = analysis["confidence"]
+
+    db.commit()
+    db.refresh(incident)
+
+    return incident
