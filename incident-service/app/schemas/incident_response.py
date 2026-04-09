@@ -1,0 +1,22 @@
+from datetime import datetime
+from pydantic import BaseModel
+# Esquema de la respuesta que se devolvera al cleinte tras una llamada
+
+# Pydantic se encarga de validar los datos
+# None permite indicar que no es un campo obligatorio
+# Esto debe de ser coherente con lo que tenemos en el modelo de SQLAlchemy
+class IncidentResponse(BaseModel):
+    id: int
+    title: str
+    description: str
+    status: str
+    priority: str | None
+    category: str | None
+    ai_summary: str | None
+    ai_confidence: int | None
+    created_at: datetime
+    updated_at: datetime
+
+    class Config:
+        # Con esto lee como un objeto de la base de datos y con sus restricciones, gracias a SQLAlchemy
+        from_attributes = True  
