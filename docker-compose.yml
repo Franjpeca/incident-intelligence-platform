@@ -29,11 +29,17 @@ services:
 
   # Microservicio de incidencias
   llm-service:
-    build: ./llm-service
-    container_name: llm-service
+    build:
+      context: ./llm-service
+      dockerfile: Dockerfile
+    env_file:
+      - ./llm-service/.env
     ports:
       - "8001:8001"
+    volumes:  # Guardamos en local el cache de Hugging Face para evitar descargar modelos cada vez
+      - hf_cache:/root/.cache/huggingface
 
 
 volumes:
   postgres_data:
+  hf_cache:

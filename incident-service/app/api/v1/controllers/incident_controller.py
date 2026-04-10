@@ -9,6 +9,7 @@ from app.application.services.incident_service import (
     delete_incident,
     update_incident,
     analyze_incident,
+    get_incident_analysis, 
 )
 
 # Introducir una incidencia
@@ -38,3 +39,7 @@ def update_incident_controller(incident_id: int, data, db: Session):
 # Analiza una incidencia
 def analyze_incident_controller(incident_id: int, db: Session):
     return analyze_incident(incident_id, db)
+
+# Obtener analisis de uan incidencia
+def get_incident_analysis_controller(incident_id: int, db: Session):
+    return get_incident_analysis(incident_id, db)

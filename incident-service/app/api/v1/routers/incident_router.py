@@ -16,6 +16,7 @@ from app.api.v1.controllers.incident_controller import (
     delete_incident_controller,
     update_incident_controller,
     analyze_incident_controller,
+    get_incident_analysis_controller,
 )
 
 router = APIRouter(prefix="/api/v1/incidents", tags=["incidents"])
@@ -73,10 +74,20 @@ def update_incident(incident_id: int, data: IncidentUpdateRequest, db: Session =
 
     return incident
 
-# Establecemos la ruta para usar el analisis usando LLM
+# Establecemos la ruta para generar el analisis usando LLM
 @router.post("/{incident_id}/analysis")
 def analyze_incident(incident_id: int, db: Session = Depends(get_db)):
     analysis = analyze_incident_controller(incident_id, db)
+
+    if analysis is None:
+        raise HTTPException(status_code=404, detail="Incident not found")
+
+    return analysis
+
+# Endpoint para poder obtener el analisis de una incidencia dado el id
+@router.get("/{incident_id}/analysis")
+def get_incident_analysis(incident_id: int, db: Session = Depends(get_db)):
+    analysis = get_incident_analysis_controller(incident_id, db)
 
     if analysis is None:
         raise HTTPException(status_code=404, detail="Incident not found")

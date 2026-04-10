@@ -90,3 +90,18 @@ def analyze_incident(incident_id: int, db: Session):
     db.refresh(incident)
 
     return incident
+
+# Getter del analisis de una incidencia usando el id
+def get_incident_analysis(incident_id: int, db: Session):
+    # Indicamos el id de la incidencia de la que obtenemos el id
+    incident = db.query(Incident).filter(Incident.id == incident_id).first()
+    # Si no hay incidencia con ese id, devolvemos none
+    if incident is None:
+        return None
+
+    return {
+        "ai_summary": incident.ai_summary,
+        "category": incident.category,
+        "priority": incident.priority,
+        "ai_confidence": incident.ai_confidence,
+    }
