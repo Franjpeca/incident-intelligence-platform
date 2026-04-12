@@ -5,6 +5,8 @@ from app.core.model_loader import load_model
 from app.core.output_parser import extract_json
 from app.core.prompt_manager import build_prompt
 from app.schemas.analysis_response import AnalysisResponse
+# Importaciones de excepciones propias
+from app.core.exceptions import ModelInferenceError, InvalidModelOutputError
 
 
 
@@ -37,31 +39,40 @@ def analyze_text(text: str) -> AnalysisResponse:
 
     # Transformamos este texto a tokens que entendera el modelo y los movemos a memoria
     # Es cargar la entrada
-    inputs = _tokenizer(input_text, return_tensors="pt").to(_model.device)
+    try:
+        inputs = _tokenizer(input_text, return_tensors="pt").to(_model.device)
+    except Exception as exc:
+        raise ModelInferenceError("Error al preparar el input del modelo") from exc
 
     # Generamos la respuesta del modelo
     # Aqui se introducen al modelo la entrada que ya ha sido cargada y se pide generar una respuesta
     # Se le indican parametros del mismo, como la temperatura
-    outputs = _model.generate(
-        **inputs,
-        max_new_tokens=MAX_NEW_TOKENS,
-        temperature=TEMPERATURE,
-        top_p=TOP_P,
-        do_sample=DO_SAMPLE
-    )
+    try:
+        outputs = _model.generate(
+            **inputs,
+            max_new_tokens=MAX_NEW_TOKENS,
+            temperature=TEMPERATURE,
+            top_p=TOP_P,
+            do_sample=DO_SAMPLE
+        )
+    except Exception as exc:
+        raise ModelInferenceError("Error durante la inferencia del modelo") from exc
 
     # La respuesta viene mezclada con la entrada, por lo que hay que separar la parte de la respuesta que nos interesa
     generated_ids = outputs[0][inputs["input_ids"].shape[1]:]
     # Proceso inverso, pasamos de token a texto legible
-    output_text = _tokenizer.decode(generated_ids, skip_special_tokens=True)
+    try:
+        output_text = _tokenizer.decode(generated_ids, skip_special_tokens=True)
+    except Exception as exc:
+        raise ModelInferenceError("Error al decodificar la salida del modelo") from exc
 
     # Extraemos el JSON de la respuesta del modelo y lo parseamos a un diccionario
     parsed = extract_json(output_text)
 
-    # Devolvemos la respuesta con el formato esperado
-    return AnalysisResponse(
-        summary=str(parsed["summary"]),
-        category=str(parsed["category"]),
-        priority=str(parsed["priority"]),
-        confidence=int(parsed["confidence"])
-    )
+    # Intentamos crear el objeto AnalysisResponse directamente
+    # Pydantic se encargara de comprobar si faltan campos o si los tipos estan mal.
+    # Esto permite que sea escalable, sin tener que especificar en esta parte del codigo campos fijos
+    try:
+        return AnalysisResponse(**parsed) 
+    except Exception as exc:
+        raise InvalidModelOutputError(f"La salida del modelo no es valida: {str(exc)}")

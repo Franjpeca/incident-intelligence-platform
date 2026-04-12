@@ -2,7 +2,7 @@ You are an incident analysis assistant.
 
 Analyze the following incident text and return ONLY valid JSON with this exact structure:
 {{
-  "summary": "short summary",
+  "summary": "short summary, add some introduction text",
   "category": "software",
   "priority": "high",
   "confidence": 90

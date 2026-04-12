@@ -19,7 +19,7 @@ def analyze_text_with_llm(text: str):
     except requests.exceptions.Timeout: # Comprobamos errores posibles que hayan sucedido
         raise LLMServiceUnavailableError("Tiempo de espera agotado para el servicio de LLM")
     except requests.exceptions.ConnectionError:
-        raise LLMServiceUnavailableError("Error de conexsion con el servicio de LLM")
+        raise LLMServiceUnavailableError("Error de conexion con el servicio de LLM")
     except requests.exceptions.RequestException:
         raise LLMServiceUnavailableError("Error de solicitud al servicio de LLM")
 

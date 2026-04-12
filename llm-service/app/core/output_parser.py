@@ -1,4 +1,5 @@
 import json
+from app.core.exceptions import InvalidModelOutputError
 
 # Slicer que extrae el texto del JSON
 # Comprueba si sera un JSON valido, si no lo es, lanza una excepcion
@@ -9,11 +10,13 @@ def extract_json(output_text: str) -> dict:
 
     # Aqui se comprueba que el modelo es un JSON a traves de 
     if start == -1 or end == -1 or end <= start:
-        raise ValueError("El modelo no ha devuelto un JSON")
+        raise InvalidModelOutputError("El modleo no ha devuelto un JSON valido")
 
     json_text = output_text[start:end + 1]
 
+    # Aqui comprobamos que el texto extraido es un JSON valido, si no lo es, lanzamos una excepcion 
+    # Pasamos de json a un objeto python, si da error es porque el texto no es un JSON
     try:
-        return json.loads(json_text)
+        return json.loads(json_text) 
     except json.JSONDecodeError as exc:
-        raise ValueError("El JSON devuelto por el modelo no es valido") from exc
+        raise InvalidModelOutputError("El JSON devuelto por el modelo no es valido") from exc
