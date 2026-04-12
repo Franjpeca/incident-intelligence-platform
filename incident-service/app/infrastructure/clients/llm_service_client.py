@@ -1,15 +1,47 @@
 import os
 import requests
 
+from app.core.exceptions import (
+    LLMServiceUnavailableError,
+    InvalidLLMResponseError,
+)
+
 LLM_SERVICE_URL = os.getenv("LLM_SERVICE_URL")
 
 def analyze_text_with_llm(text: str):
-    response = requests.post(
-        f"{LLM_SERVICE_URL}/api/v1/analysis/text",
-        json={"text": text},
-        timeout=10
-    )
+    # Realizamos la solicitud al servicio de LLM usando la libreria requests
+    try:
+        response = requests.post(
+            f"{LLM_SERVICE_URL}/api/v1/analysis/text",
+            json={"text": text},
+            timeout=120
+        )
+    except requests.exceptions.Timeout: # Comprobamos errores posibles que hayan sucedido
+        raise LLMServiceUnavailableError("Tiempo de espera agotado para el servicio de LLM")
+    except requests.exceptions.ConnectionError:
+        raise LLMServiceUnavailableError("Error de conexsion con el servicio de LLM")
+    except requests.exceptions.RequestException:
+        raise LLMServiceUnavailableError("Error de solicitud al servicio de LLM")
 
-    response.raise_for_status()
+    # Comprobamos si el error devuelto es 500, es decir, un error de lservidor
+    if response.status_code >= 500:
+        raise LLMServiceUnavailableError("Error de servidor en el servicio LLM")
 
-    return response.json()
+    # Buscamos con raise_for_status comprobar si ha devuelto algun codigo de error HTTP 4XX o 5XX
+    # Es para controlar otros posibles errores de forma generica
+    try:
+        response.raise_for_status()
+    except requests.exceptions.HTTPError:
+        raise LLMServiceUnavailableError("El servicio LLM devolvio un error HTTP")
+
+    # Ahora comprobamos que los datos que nos ha devuelto el LLM es un JSON y con formato correcto
+    try:
+        data = response.json()
+    except ValueError:
+        raise InvalidLLMResponseError("La respuesta del servicio LLM no es un JSON valido")
+
+    if not isinstance(data, dict):
+        raise InvalidLLMResponseError("La respuesta del servicio LLM no es un objeto valido")
+
+    # Si no sucede ninguno de los errores anteriores, devolvemos la respuesta dada por el LLM
+    return data
