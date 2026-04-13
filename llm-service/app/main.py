@@ -40,9 +40,7 @@ app.add_exception_handler(Exception, generic_exception_handler)
 def on_startup():
     # Se realiza un tipo de carga u otra dependiendo del parametro
     if LOAD_MODEL_ON_STARTUP:
-        print("Cargando modelo...")
         load_model()
-        print("Modelo cargado")
 
 # Endpoint para comprobar el estado del microservicio y si el modelo esta cargado o no
 @app.get("/health")
