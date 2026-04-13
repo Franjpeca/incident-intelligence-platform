@@ -1,10 +1,13 @@
 import os
 import requests
+import logging
 
 from app.core.exceptions import (
     LLMServiceUnavailableError,
     InvalidLLMResponseError,
 )
+
+logger = logging.getLogger("incident-service")
 
 LLM_SERVICE_URL = os.getenv("LLM_SERVICE_URL")
 
@@ -13,6 +16,7 @@ LLM_SERVICE_URL = os.getenv("LLM_SERVICE_URL")
 # Es un cliente que se comunica con otro servicio externo
 def analyze_text_with_llm(text: str, analysis_type: str):
     # Realizamos la solicitud al servicio de LLM usando la libreria requests
+    logging.info(f"Enviando solicitud al servicio LLM en {LLM_SERVICE_URL} para analizar el texto con el tipo de analisis: {analysis_type}")
     try:
         response = requests.post(
             f"{LLM_SERVICE_URL}/api/v1/analysis/text",
@@ -42,12 +46,16 @@ def analyze_text_with_llm(text: str, analysis_type: str):
 
     # Ahora comprobamos que los datos que nos ha devuelto el LLM es un JSON y con formato correcto
     try:
+        logging.info(f"Respuesta recibida del servicio LLM para el analisis del texto, comprobando formato de la respuesta")
         data = response.json()
     except ValueError:
+        logging.warning(f"Respuesta del servicio LLM no es un JSON valido")
         raise InvalidLLMResponseError("La respuesta del servicio LLM no es un JSON valido")
 
     if not isinstance(data, dict):
+        logging.warning(f"Respuesta del servicio LLM no es un objeto JSON valido")
         raise InvalidLLMResponseError("La respuesta del servicio LLM no es un objeto valido")
 
     # Si no sucede ninguno de los errores anteriores, devolvemos la respuesta dada por el LLM
+    logging.info(f"Respuesta del servicio LLM recibida y validada correctamente")
     return data

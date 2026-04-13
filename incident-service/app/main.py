@@ -4,6 +4,8 @@ from app.infrastructure.db.session import engine
 from app.infrastructure.db.models.incident_model import Incident
 from app.api.v1.routers.incident_router import router as incident_router
 
+import logging
+
 from app.core.exceptions import (
     IncidentNotFoundError,
     AnalysisNotFoundError,
@@ -20,6 +22,12 @@ from app.core.error_handlers import (
     database_operation_handler,
     generic_exception_handler,
 )
+
+from app.core.logging_config import setup_logging
+
+setup_logging()
+
+logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
