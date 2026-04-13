@@ -17,5 +17,10 @@ LOAD_MODEL_ON_STARTUP = os.getenv("LOAD_MODEL_ON_STARTUP", "false").lower() == "
 # Directorio de prompt
 PROMPTS_DIR = Path(os.getenv("PROMPTS_DIR", "app/prompts"))
 
-# Fichero de prompt basico
-PROMPT_BASIC_FILE = os.getenv("PROMPT_BASIC_FILE", "incident_analysis_v1.txt")
+# Ficheros prompt
+ANALYSIS_TYPE_TO_PROMPT = {
+    "basic_analysis": "incident_basic_analysis.txt",
+    "full_analysis": "incident_full_analysis.txt",
+}
+
+DEFAULT_ANALYSIS_TYPE = "basic_analysis"

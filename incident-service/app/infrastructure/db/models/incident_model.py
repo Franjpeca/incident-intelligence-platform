@@ -17,8 +17,8 @@ class Incident(Base):
     category = Column(String(100), nullable=True)
     
     # Atributos para el LLM
-    ai_summary = Column(Text, nullable=True)
-    ai_confidence = Column(Integer, nullable=True)
+    analysis_summary = Column(Text, nullable=True)
+    analysis_confidence = Column(Integer, nullable=True)
 
     # Fechas de creacion y actualizacion
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))

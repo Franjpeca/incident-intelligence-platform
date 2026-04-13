@@ -3,6 +3,8 @@ from app.infrastructure.db.models.incident_model import Incident
 from app.schemas.incident_request import IncidentCreateRequest
 from app.domain.enums.incident_status import IncidentStatus
 from app.infrastructure.clients.llm_service_client import analyze_text_with_llm
+from app.application.services.incident_rules_service import analyze_text_with_rules
+
 from app.core.exceptions import (
     IncidentNotFoundError,
     InvalidLLMResponseError,
@@ -113,34 +115,49 @@ def update_incident(incident_id: int, data, db: Session):
         raise DatabaseOperationError("Error al actualizar la incidencia")
 
 # Funcion que analiza el texto de una incidencia segun id
-# Utiliza el codigo correspondiente para comunicarse con el microservicio del LLM
+# Primero se analiza usando reglas, y dependiendo del resultado, se llamara al LLM o no
+# Tambien indicara que prompt usar en el LLM, para mas eficiencia
 def analyze_incident(incident_id: int, db: Session):
     # Obtenemos la incidencia y comprobamos que existe
     incident = db.query(Incident).filter(Incident.id == incident_id).first()
 
+    # Si no existe, lanzamos error
     if incident is None:
         raise IncidentNotFoundError("Incidencia no encontrada")
 
-    # Establecemos el texto a analizar, en este caso el titulo y la descripcion de la incidencia
-    text_to_analyze = f"Title: {incident.title}\nDescription: {incident.description}"
-    
-    
-    
-    analysis = analyze_text_with_llm(text_to_analyze)
+    # Indicamos cada campo correspondiente de la incidencia a tratar
+    rules_result = analyze_text_with_rules(
+        title=incident.title,
+        description=incident.description
+    )
 
-    
-    # Comprobamos que el json obtenido del LLM tiene los campos necesarios, si no es asi, lanzamos un error
-    if not all(key in analysis for key in ["summary", "category", "priority", "confidence"]):
-        raise InvalidLLMResponseError("Respuesta invalida del servicio LLM")
+    # Si el sistema de reglas lo indica, usamos el LLM
+    if rules_result.use_llm:
+        analysis_type = rules_result.analysis_type
+
+        # Establecemos el texto a analizar, en este caso el titulo y la descripcion de la incidencia
+        text_to_analyze = f"Title: {incident.title}\nDescription: {incident.description}"
+        analysis = analyze_text_with_llm(text_to_analyze, analysis_type)
+
+        # Comprobamos que el json obtenido del LLM tiene los campos necesarios, si no es asi, lanzamos un error
+        if not all(key in analysis for key in ["summary", "category", "priority", "confidence"]):
+            raise InvalidLLMResponseError("Respuesta invalida del servicio LLM")
+
+        # GUardamos el resultado obtenido por el LLM
+        incident.analysis_summary = analysis["summary"]
+        incident.category = analysis["category"]
+        incident.priority = analysis["priority"]
+        incident.analysis_confidence = analysis["confidence"]
+    # Si no, pues simplemente guardamos el resultado
+    else:
+        incident.analysis_summary = rules_result.summary
+        incident.category = rules_result.category
+        incident.priority = rules_result.priority
+        incident.analysis_confidence = rules_result.confidence
 
     # Introducimos el resultado del analisis en la incidencia y lo metemos en la bd
     # Nos aseguramos de que se guarda bien, si no, error
     try:
-        incident.ai_summary = analysis["summary"]
-        incident.category = analysis["category"]
-        incident.priority = analysis["priority"]
-        incident.ai_confidence = analysis["confidence"]
-
         db.commit()
         db.refresh(incident)
 
@@ -161,12 +178,12 @@ def get_incident_analysis(incident_id: int, db: Session):
     if incident is None:
         raise IncidentNotFoundError("Incidencia no encontrada")
     
-    if incident.ai_summary is None:
+    if incident.analysis_summary is None:
         raise AnalysisNotFoundError("Analysis not found for this incident")
 
     return {
-        "ai_summary": incident.ai_summary,
+        "analysis_summary": incident.analysis_summary,
         "category": incident.category,
         "priority": incident.priority,
-        "ai_confidence": incident.ai_confidence,
+        "analysis_confidence": incident.analysis_confidence,
     }

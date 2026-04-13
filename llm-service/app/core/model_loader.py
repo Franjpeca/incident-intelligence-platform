@@ -14,7 +14,6 @@ def load_model():
     # Tomamos las variables gloables, y si no esta cargado el modelo y tokenizer, los cargamos
     global _tokenizer, _model
 
-    print("[DEBUG] ID del modelo a cargar:", MODEL_ID)
     # Probamos a realizar la carga de las dos variables
     try:
         if _tokenizer is None:

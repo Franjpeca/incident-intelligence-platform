@@ -12,8 +12,8 @@ class IncidentResponse(BaseModel):
     status: str
     priority: str | None
     category: str | None
-    ai_summary: str | None
-    ai_confidence: int | None
+    analysis_summary: str | None
+    analysis_confidence: int | None
     created_at: datetime
     updated_at: datetime
 

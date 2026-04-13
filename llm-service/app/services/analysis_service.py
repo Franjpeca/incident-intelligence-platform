@@ -1,6 +1,6 @@
 import json
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from app.core.config import DO_SAMPLE, MAX_NEW_TOKENS, PROMPT_BASIC_FILE, TEMPERATURE, TOP_P, MODEL_ID
+from app.core.config import DO_SAMPLE, MAX_NEW_TOKENS, TEMPERATURE, TOP_P
 from app.core.model_loader import load_model
 from app.core.output_parser import extract_json
 from app.core.prompt_manager import build_prompt
@@ -13,14 +13,14 @@ from app.core.exceptions import ModelInferenceError, InvalidModelOutputError
 # Funcion principal del servicios de analisis
 # Recibe el texto del cliente a analizar
 # Devuelve un objeto con el resumen, categoria, prioridad y confianza
-def analyze_text(text: str) -> AnalysisResponse:
+def analyze_text(text: str, analysis_type: str = None) -> AnalysisResponse:
     # Cargamos el modelo y el tokenizer
     # El modelo se carga una sola vez y se reutiliza en cada llamada a la función
     _tokenizer, _model = load_model()
 
     # Construimos el prompt con el texto del cliente y nuestra plantilla
     prompt = build_prompt(
-        prompt_name=PROMPT_BASIC_FILE,
+        analysis_type=analysis_type,
         text=text
     )
 
@@ -57,7 +57,6 @@ def analyze_text(text: str) -> AnalysisResponse:
         )
     except Exception as exc:
         raise ModelInferenceError("Error durante la inferencia del modelo") from exc
-
     # La respuesta viene mezclada con la entrada, por lo que hay que separar la parte de la respuesta que nos interesa
     generated_ids = outputs[0][inputs["input_ids"].shape[1]:]
     # Proceso inverso, pasamos de token a texto legible
@@ -65,7 +64,6 @@ def analyze_text(text: str) -> AnalysisResponse:
         output_text = _tokenizer.decode(generated_ids, skip_special_tokens=True)
     except Exception as exc:
         raise ModelInferenceError("Error al decodificar la salida del modelo") from exc
-
     # Extraemos el JSON de la respuesta del modelo y lo parseamos a un diccionario
     parsed = extract_json(output_text)
 

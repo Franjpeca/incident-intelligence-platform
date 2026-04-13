@@ -8,12 +8,18 @@ from app.core.exceptions import (
 
 LLM_SERVICE_URL = os.getenv("LLM_SERVICE_URL")
 
-def analyze_text_with_llm(text: str):
+# Funcion que se comunica con el microservicio del LLM
+# Se encuentra en la capa de infraestructura ya que no es parte de la propia API
+# Es un cliente que se comunica con otro servicio externo
+def analyze_text_with_llm(text: str, analysis_type: str):
     # Realizamos la solicitud al servicio de LLM usando la libreria requests
     try:
         response = requests.post(
             f"{LLM_SERVICE_URL}/api/v1/analysis/text",
-            json={"text": text},
+            json={
+                "text": text,
+                "analysis_type": analysis_type
+            },
             timeout=120
         )
     except requests.exceptions.Timeout: # Comprobamos errores posibles que hayan sucedido
