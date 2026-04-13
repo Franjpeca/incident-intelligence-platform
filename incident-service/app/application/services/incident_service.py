@@ -123,8 +123,12 @@ def analyze_incident(incident_id: int, db: Session):
 
     # Establecemos el texto a analizar, en este caso el titulo y la descripcion de la incidencia
     text_to_analyze = f"Title: {incident.title}\nDescription: {incident.description}"
+    
+    
+    
     analysis = analyze_text_with_llm(text_to_analyze)
 
+    
     # Comprobamos que el json obtenido del LLM tiene los campos necesarios, si no es asi, lanzamos un error
     if not all(key in analysis for key in ["summary", "category", "priority", "confidence"]):
         raise InvalidLLMResponseError("Respuesta invalida del servicio LLM")
@@ -144,6 +148,8 @@ def analyze_incident(incident_id: int, db: Session):
     except Exception:
         db.rollback()
         raise DatabaseOperationError("Error al guardar el analisis")
+
+
 
 # Getter del analisis de una incidencia usando el id
 def get_incident_analysis(incident_id: int, db: Session):
