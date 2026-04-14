@@ -1,3 +1,5 @@
+# Importancion para el estandar actual de pydantic
+from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 from pydantic import BaseModel
 # Esquema de la respuesta que se devolvera al cleinte tras una llamada
@@ -17,6 +19,5 @@ class IncidentResponse(BaseModel):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        # Con esto lee como un objeto de la base de datos y con sus restricciones, gracias a SQLAlchemy
-        from_attributes = True  
+    # Con esto lee como un objeto de la base de datos y con sus restricciones, gracias a SQLAlchemy
+    model_config = ConfigDict(from_attributes=True)
