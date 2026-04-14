@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from app.infrastructure.db.base import Base
 from app.infrastructure.db.session import engine
@@ -32,6 +33,18 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    logger.info("Iniciando microservicio de incidencias")
+    Base.metadata.create_all(bind=engine)
+    yield
+    logger.info("Apagando microservicio de incidencias")
+
+app = FastAPI(
+    title="Incident Service",
+    lifespan=lifespan
+)
+
 # Registro de los manejadores de errores propios
 # Se registra el tipo de error y el manejador (funcion) que se encarga de procesar ese error
 app.add_exception_handler(IncidentNotFoundError, incident_not_found_handler)
@@ -40,13 +53,6 @@ app.add_exception_handler(LLMServiceUnavailableError, llm_service_unavailable_ha
 app.add_exception_handler(InvalidLLMResponseError, invalid_llm_response_handler)
 app.add_exception_handler(DatabaseOperationError, database_operation_handler)
 app.add_exception_handler(Exception, generic_exception_handler)
-
-# Ejecucion al iniciar el microservicio
-@app.on_event("startup")
-def on_startup():
-    logging.info("Iniciando microservicio")
-    Base.metadata.create_all(bind=engine)
-    logging.info("Base de datos creada")
 
 
 # Endopint para probar que el microservicio esta activo
