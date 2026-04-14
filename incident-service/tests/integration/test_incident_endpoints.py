@@ -71,3 +71,75 @@ def test_get_incident_by_id_returns_404(monkeypatch):
     # Se espera que se devuelva el error de incidencia no encontrada
     assert response.status_code == 404
     assert response.json()["detail"] == "La incidencia con ese id no existe"
+
+
+# Test de integracion que simula el retorno de todas las incidencias
+def test_get_all_incidents_endpoint(monkeypatch):
+    # Funcion mock que devolveria todas las incidencias
+    # Aqui no testeamos que se devuelvan todas, sino al comunicacion, por eso es integracion
+    def mock_get_incidents_controller(db):
+        return [
+            {
+                "id": 1,
+                "title": "Servidor caido",
+                "description": "Error en produccion",
+                "status": "open",
+                "priority": "high",
+                "category": "software",
+                "analysis_summary": None,
+                "analysis_confidence": None,
+                "created_at": datetime.now(timezone.utc),
+                "updated_at": datetime.now(timezone.utc),
+            }
+        ]
+
+    # Atributos para llamar a la funcion mock
+    monkeypatch.setattr(
+        "app.api.v1.routers.incident_router.get_incidents_controller",
+        mock_get_incidents_controller,
+    )
+
+    # Simulamos una llamada a dicho endpoint
+    response = client.get("/api/v1/incidents")
+
+    # Asertos esperados, si fallan lanzamos error
+    assert response.status_code == 200
+    body = response.json()
+    assert isinstance(body, list)
+    assert len(body) == 1
+    assert body[0]["title"] == "Servidor caido"
+
+
+# Simulamos la llamada a analizar una incidencia
+def test_analyze_incident_endpoint(monkeypatch):
+    # Funcion mock
+    def mock_analyze_incident_controller(incident_id, db):
+        return {
+            "id": incident_id,
+            "title": "Servidor caido",
+            "description": "La aplicacion no responde",
+            "status": "open",
+            "priority": "high",
+            "category": "software",
+            "analysis_summary": "Incidencia critica detectada",
+            "analysis_confidence": None,
+            "created_at": datetime.now(timezone.utc),
+            "updated_at": datetime.now(timezone.utc),
+        }
+
+    # Atributos para el funcionamiento del mock
+    monkeypatch.setattr(
+        "app.api.v1.routers.incident_router.analyze_incident_controller",
+        mock_analyze_incident_controller,
+    )
+
+    # Simulamos una llamada al endpoint real
+    response = client.post("/api/v1/incidents/1/analysis")
+
+    # Comprobamos si se devuelve correctamente los datos
+    assert response.status_code == 200
+    body = response.json()
+    assert body["id"] == 1
+    assert body["priority"] == "high"
+    assert body["category"] == "software"
+    assert body["analysis_summary"] == "Incidencia critica detectada"
