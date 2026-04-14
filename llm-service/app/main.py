@@ -3,6 +3,9 @@ from app.api.v1.routers.analysis_router import router as analysis_router
 from app.core.config import LOAD_MODEL_ON_STARTUP
 from app.core.model_loader import load_model, is_model_loaded
 
+import logging
+from app.core.logging_config import setup_logging
+
 # Importancion de los tipos de errores (excepciones personalizadas)
 from app.core.exceptions import (
     ModelNotLoadedError,
@@ -23,6 +26,13 @@ from app.core.error_handlers import (
     prompt_formatting_handler,
     generic_exception_handler,
 )
+
+
+
+setup_logging()
+
+logger = logging.getLogger(__name__)
+
 
 app = FastAPI()
 

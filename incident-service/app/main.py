@@ -43,11 +43,15 @@ app.add_exception_handler(Exception, generic_exception_handler)
 # Ejecucion al iniciar el microservicio
 @app.on_event("startup")
 def on_startup():
+    logging.info("Iniciando microservicio")
     Base.metadata.create_all(bind=engine)
+    logging.info("Base de datos creada")
+
 
 # Endopint para probar que el microservicio esta activo
 @app.get("/health")
 def health():
+    logging.info("Peticion de health check")
     return {"status": "ok"}
 
 # Permite incluir el router de incidencias y con ello sus endpoints
