@@ -8,3 +8,6 @@ torch
 accelerate
 safetensors
 sentencepiece
+
+pytest
+httpx

@@ -1,3 +1,5 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from app.api.v1.routers.analysis_router import router as analysis_router
 from app.core.config import LOAD_MODEL_ON_STARTUP
@@ -27,14 +29,33 @@ from app.core.error_handlers import (
     generic_exception_handler,
 )
 
-
-
 setup_logging()
 
 logger = logging.getLogger(__name__)
 
 
 app = FastAPI()
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    logger.info("Iniciando microservicio LLM...")
+    # En base a una variable configurable, se establece cuando cargar el modelo
+    if LOAD_MODEL_ON_STARTUP:
+        logger.info("Se procede a realizar la carga del modelo ...")
+        load_model()
+        if is_model_loaded():
+            logger.info("Modelo cargado correctamente en memoria")
+        else:
+            logger.error("El modelo no se pudo cargar")
+            
+    yield
+    logger.info("Apagando microservicio LLM...")
+
+app = FastAPI(
+    title="LLM Service",
+    lifespan=lifespan
+)
 
 # Registro de manejadores de errores personalizados
 app.add_exception_handler(ModelNotLoadedError, model_not_loaded_handler)
@@ -45,12 +66,7 @@ app.add_exception_handler(InvalidModelOutputError, invalid_model_output_handler)
 app.add_exception_handler(PromptFormattingError, prompt_formatting_handler)
 app.add_exception_handler(Exception, generic_exception_handler)
 
-# Evento al levantar el microservicio
-@app.on_event("startup")
-def on_startup():
-    # Se realiza un tipo de carga u otra dependiendo del parametro
-    if LOAD_MODEL_ON_STARTUP:
-        load_model()
+
 
 # Endpoint para comprobar el estado del microservicio y si el modelo esta cargado o no
 @app.get("/health")

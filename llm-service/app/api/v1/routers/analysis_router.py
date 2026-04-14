@@ -11,5 +11,5 @@ router = APIRouter(prefix="/api/v1/analysis", tags=["analysis"])
 
 @router.post("/text", response_model=AnalysisResponse)
 def analyze_text(data: AnalysisRequest):
-    logger.info("Peticion de analisis de una incidencia recibida en llm-service", len(data.text))
+    logger.info("Peticion de analisis de una incidencia recibida en llm-service. Longitud: %d", len(data.text))
     return analyze_text_controller(data)
