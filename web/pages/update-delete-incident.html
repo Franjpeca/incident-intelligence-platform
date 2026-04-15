@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Actualizar incidencia</title>
+  <title>Actualizar o borrar incidencias</title>
   <link rel="stylesheet" href="../assets/css/styles.css">
 </head>
 <body>
@@ -15,13 +15,13 @@
     <a class="nav-link" href="/index.html">Home</a>
     <a class="nav-link" href="/pages/create-incident.html">Crear incidencia</a>
     <a class="nav-link" href="/pages/view-incident.html">Ver incidencias</a>
-    <a class="nav-link active" href="/pages/update-incident.html">Actualizar incidencia</a>
+    <a class="nav-link active" href="/pages/update-delete-incident.html">Actualizar o borrar incidencias</a>
+    <a class="nav-link" href="/pages/incident-analysis.html">Analisis y uso del modelo</a>
   </aside>
 
   <main class="main-content">
-    <h1>Actualizar incidencia</h1>
+    <h1>Actualizar o borrar incidencias</h1>
 
-    <!-- 🔵 ACTUALIZACION COMPLETA -->
     <div class="card">
       <h3>Actualizar incidencia</h3>
 
@@ -60,7 +60,6 @@
       <pre id="update-response" class="response-box"></pre>
     </div>
 
-    <!-- 🟡 SOLO ESTADO -->
     <div class="card">
       <h3>Actualizar solo estado</h3>
 
@@ -88,13 +87,31 @@
       <pre id="status-response" class="response-box"></pre>
     </div>
 
+    <div class="card">
+      <h3>Borrar incidencia</h3>
+
+      <form id="delete-form">
+
+        <div class="form-group">
+          <label>ID</label>
+          <input id="delete-id" type="number" required>
+        </div>
+
+        <button type="submit">Borrar incidencia</button>
+
+      </form>
+
+      <p id="delete-feedback" class="feedback"></p>
+      <pre id="delete-response" class="response-box"></pre>
+    </div>
+
   </main>
 
 </div>
 
 <script src="../assets/js/config.js"></script>
 <script src="../assets/js/common.js"></script>
-<script src="../assets/js/update-incident.js"></script>
+<script src="../assets/js/update-delete-incident.js"></script>
 
 </body>
 </html>

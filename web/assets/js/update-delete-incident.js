@@ -1,11 +1,15 @@
 const updateForm = document.getElementById("update-form");
 const statusForm = document.getElementById("status-form");
+const deleteForm = document.getElementById("delete-form");
 
 const updateFeedback = document.getElementById("update-feedback");
 const updateResponse = document.getElementById("update-response");
 
 const statusFeedback = document.getElementById("status-feedback");
 const statusResponse = document.getElementById("status-response");
+
+const deleteFeedback = document.getElementById("delete-feedback");
+const deleteResponse = document.getElementById("delete-response");
 
 function clearUpdate() {
   updateFeedback.textContent = "";
@@ -17,6 +21,12 @@ function clearStatus() {
   statusFeedback.textContent = "";
   statusFeedback.className = "feedback";
   statusResponse.textContent = "";
+}
+
+function clearDelete() {
+  deleteFeedback.textContent = "";
+  deleteFeedback.className = "feedback";
+  deleteResponse.textContent = "";
 }
 
 updateForm.addEventListener("submit", async (e) => {
@@ -88,5 +98,27 @@ statusForm.addEventListener("submit", async (e) => {
     statusFeedback.textContent = "Error al actualizar estado";
     statusFeedback.classList.add("error");
     statusResponse.textContent = error.message;
+  }
+});
+
+deleteForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  clearDelete();
+
+  const id = document.getElementById("delete-id").value.trim();
+
+  try {
+    const data = await apiRequest(`${CONFIG.API_BASE_URL}/incidents/${id}`, {
+      method: "DELETE"
+    });
+
+    deleteFeedback.textContent = "Incidencia borrada correctamente";
+    deleteFeedback.classList.add("success");
+    deleteResponse.textContent = JSON.stringify(data, null, 2);
+
+  } catch (error) {
+    deleteFeedback.textContent = "Error al borrar incidencia";
+    deleteFeedback.classList.add("error");
+    deleteResponse.textContent = error.message;
   }
 });

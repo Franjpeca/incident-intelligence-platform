@@ -11,6 +11,7 @@ from app.core.exceptions import (
     IncidentNotFoundError,
     InvalidLLMResponseError,
     DatabaseOperationError,
+    AnalysisNotFoundError,
     FieldError,
 )
 

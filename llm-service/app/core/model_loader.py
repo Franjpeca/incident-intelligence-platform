@@ -41,13 +41,5 @@ def load_model():
 
 
 
-
-
-
-
-
-
-
-
 def is_model_loaded(): # Funcion para verificar si el modelo y tokenizer estan cargados, para el health check
     return _tokenizer is not None and _model is not None

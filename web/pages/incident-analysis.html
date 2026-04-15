@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Analisis de incidencias y uso del modelo</title>
+  <link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+
+<div class="app-layout">
+
+  <aside class="sidebar">
+    <h2>Incident UI</h2>
+
+    <a class="nav-link" href="/index.html">Home</a>
+    <a class="nav-link" href="/pages/create-incident.html">Crear incidencia</a>
+    <a class="nav-link" href="/pages/view-incident.html">Ver incidencias</a>
+    <a class="nav-link" href="/pages/update-delete-incident.html">Actualizar o borrar incidencias</a>
+    <a class="nav-link active" href="/pages/incident-analysis.html">Analisis y uso del modelo</a>
+  </aside>
+
+  <main class="main-content">
+    <h1>Analisis de incidencias y uso del modelo</h1>
+
+    <div class="card">
+      <h3>Lanzar analisis de una incidencia</h3>
+
+      <form id="incident-analysis-form">
+        <div class="form-group">
+          <label>ID de la incidencia</label>
+          <input id="incident-analysis-id" type="number" required>
+        </div>
+
+        <button type="submit">Analizar incidencia</button>
+      </form>
+
+      <p id="incident-analysis-feedback" class="feedback"></p>
+      <pre id="incident-analysis-response" class="response-box"></pre>
+    </div>
+
+    <div class="card">
+      <h3>Obtener analisis de una incidencia</h3>
+
+      <form id="get-incident-analysis-form">
+        <div class="form-group">
+          <label>ID de la incidencia</label>
+          <input id="get-incident-analysis-id" type="number" required>
+        </div>
+
+        <button type="submit">Obtener analisis</button>
+      </form>
+
+      <p id="get-incident-analysis-feedback" class="feedback"></p>
+      <pre id="get-incident-analysis-response" class="response-box"></pre>
+    </div>
+
+    <div class="card">
+      <h3>Usar modelo directamente</h3>
+
+      <form id="use-model-form">
+        <div class="form-group">
+          <label>Texto</label>
+          <textarea id="model-text" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Tipo de analisis</label>
+          <input id="analysis-type" type="text" placeholder="classification">
+        </div>
+
+        <button type="submit">Analizar texto</button>
+      </form>
+
+      <p id="use-model-feedback" class="feedback"></p>
+      <pre id="use-model-response" class="response-box"></pre>
+    </div>
+
+  </main>
+
+</div>
+
+<script src="../assets/js/config.js"></script>
+<script src="../assets/js/common.js"></script>
+<script src="../assets/js/incident-analysis.js"></script>
+
+</body>
+</html>

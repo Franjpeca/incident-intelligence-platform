@@ -23,7 +23,7 @@ def analyze_text(text: str, analysis_type: str = None) -> AnalysisResponse:
     _tokenizer, _model = load_model()
 
     # Construimos el prompt con el texto del cliente y nuestra plantilla
-    logging.info("Construyendo el prompt del modelo con text: {text} y tipo de analisis: {analysis_type}")
+    logging.info(f"Construyendo el prompt del modelo con text: {text} y tipo de analisis: {analysis_type}")
     prompt = build_prompt(
         analysis_type=analysis_type,
         text=text
@@ -78,7 +78,7 @@ def analyze_text(text: str, analysis_type: str = None) -> AnalysisResponse:
         logging.error("Error el pasar de token a texto legible")
         raise ModelInferenceError("Error al decodificar la salida del modelo") from exc
     # Extraemos el JSON de la respuesta del modelo y lo parseamos a un diccionario
-    logging.error("Error al extraer el JSON de la respuesta del modelo")
+    logging.info("Extrayendo el JSON de la respuesta del modelo")
     parsed = extract_json(output_text)
 
     # Intentamos crear el objeto AnalysisResponse directamente

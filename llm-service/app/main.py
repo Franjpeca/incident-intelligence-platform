@@ -5,6 +5,8 @@ from app.api.v1.routers.analysis_router import router as analysis_router
 from app.core.config import LOAD_MODEL_ON_STARTUP
 from app.core.model_loader import load_model, is_model_loaded
 
+from fastapi.middleware.cors import CORSMiddleware
+
 import logging
 from app.core.logging_config import setup_logging
 
@@ -55,6 +57,18 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="LLM Service",
     lifespan=lifespan
+)
+
+# Permitimos conexiones, en este caso, desde nuestra web
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5500",
+        "http://127.0.0.1:5500"
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Registro de manejadores de errores personalizados
