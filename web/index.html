@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Incident UI</title>
+  <link rel="stylesheet" href="./assets/css/styles.css">
+</head>
+<body>
+  <div class="app-layout">
+
+    <aside class="sidebar">
+        <h2>Incident UI</h2>
+        <a class="nav-link active" href="/index.html">Home</a>
+        <a class="nav-link" href="/pages/create-incident.html">Crear incidencia</a>
+        <a class="nav-link" href="/pages/view-incident.html">Ver incidencias</a>
+        <a class="nav-link" href="/pages/update-incident.html">Actualizar incidencia</a>
+    </aside>
+
+    <main class="main-content">
+      <h1>Home</h1>
+
+      <div class="card">
+        <p>Interfaz de demo para consumir la API de incidencias.</p>
+        <p>Base para pruebas E2E con Playwright.</p>
+      </div>
+
+      <div class="card">
+        <h3>Test conexión API</h3>
+        <button onclick="testApi()">Probar conexión</button>
+        <p id="result"></p>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    function testApi() {
+      const result = document.getElementById("result");
+      result.textContent = "Probando...";
+
+      fetch("http://localhost:8000/health")
+        .then(res => res.json())
+        .then(data => {
+          result.textContent = "OK: " + JSON.stringify(data);
+        })
+        .catch(err => {
+          result.textContent = "ERROR: " + err.message;
+        });
+    }
+  </script>
+</body>
+</html>

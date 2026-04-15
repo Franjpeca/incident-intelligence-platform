@@ -11,13 +11,7 @@ from app.core.exceptions import (
     IncidentNotFoundError,
     InvalidLLMResponseError,
     DatabaseOperationError,
-)
-
-from app.core.exceptions import (
-    IncidentNotFoundError,
-    AnalysisNotFoundError,
-    InvalidLLMResponseError,
-    DatabaseOperationError,
+    FieldError,
 )
 
 logger = logging.getLogger("incident-service")
@@ -128,15 +122,26 @@ def update_incident(incident_id: int, data, db: Session):
 
     # La diferencia es que aqui asignamos valores antes de hacer el commit en la bd
     try:
+        if data.title is None and data.description is None and data.status is None:
+            logger.error(f"No se recibieron campos para actualizar en la incidencia: {incident_id}")
+            raise FieldError("Debes enviar al menos un campo para actualizar")
 
-        incident.title = data.title
-        incident.description = data.description
-        incident.status = data.status.value
+        if data.title is not None:
+            incident.title = data.title
+
+        if data.description is not None:
+            incident.description = data.description
+
+        if data.status is not None:
+            incident.status = data.status.value
 
         db.commit()
         db.refresh(incident)
         logger.info(f"Incidencia actualizada con ID: {incident_id}")
         return incident
+    except ValueError:
+        db.rollback()
+        raise
     except Exception:
         logger.warning(f"Fallo en la eliminacion de la incidencia: ID {incident_id}")
         db.rollback()

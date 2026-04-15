@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Ver incidencias</title>
+  <link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+
+<div class="app-layout">
+
+    <aside class="sidebar">
+        <h2>Incident UI</h2>
+        <a class="nav-link" href="/index.html">Home</a>
+        <a class="nav-link" href="/pages/create-incident.html">Crear incidencia</a>
+        <a class="nav-link active" href="/pages/view-incident.html">Ver incidencias</a>
+        <a class="nav-link" href="/pages/update-incident.html">Actualizar incidencia</a>
+    </aside>
+
+  <main class="main-content">
+    <h1>Ver incidencias</h1>
+
+    <div class="card">
+      <h3>Buscar incidencia por ID</h3>
+
+      <div class="form-group">
+        <label>ID</label>
+        <input id="incident-id" type="number" min="1">
+      </div>
+
+      <button id="search-btn" type="button">Buscar incidencia</button>
+
+      <p id="search-feedback" class="feedback"></p>
+      <pre id="search-response" class="response-box"></pre>
+    </div>
+
+    <div class="card">
+      <h3>Listar todas las incidencias</h3>
+
+      <button id="load-btn" type="button">Cargar incidencias</button>
+
+      <p id="list-feedback" class="feedback"></p>
+      <div id="incidents-list"></div>
+    </div>
+
+  </main>
+
+</div>
+
+<script src="../assets/js/config.js"></script>
+<script src="../assets/js/common.js"></script>
+<script src="../assets/js/view-incident.js"></script>
+
+</body>
+</html>

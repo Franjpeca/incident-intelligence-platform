@@ -11,6 +11,10 @@ class AppError(Exception):
 class IncidentNotFoundError(AppError):
     pass
 
+class FieldError(AppError):
+    pass
+
+
 # Analisis no existente
 class AnalysisNotFoundError(AppError):
     pass

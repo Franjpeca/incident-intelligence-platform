@@ -43,6 +43,20 @@ services:
       - hf_cache:/root/.cache/huggingface
       - ./logs:/app/logs
 
+  frontend:
+      build: ./web
+      container_name: incident-frontend
+      ports:
+        - "5500:80"
+      depends_on:
+        - incident-service
+      networks:
+        - app-network
+
 volumes:
   postgres_data:
   hf_cache:
+
+networks:
+  app-network:
+    driver: bridge

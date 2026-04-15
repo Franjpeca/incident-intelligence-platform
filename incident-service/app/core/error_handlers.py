@@ -7,6 +7,7 @@ from app.core.exceptions import (
     LLMServiceUnavailableError,
     InvalidLLMResponseError,
     DatabaseOperationError,
+    FieldError,
 )
 
 ## -- Errores 4XX (cliente) --
@@ -23,6 +24,15 @@ def analysis_not_found_handler(request: Request, exc: AnalysisNotFoundError):
     return JSONResponse(
         status_code=404,
         content={"detail": exc.message}
+    )
+
+async def field_error_handler(request: Request, exc: FieldError):
+    return JSONResponse(
+        status_code=400, # Bad Request porque el error es de los datos enviados
+        content={
+            "error": "campos_invalidos",
+            "message": exc.message
+        }
     )
 
 ## -- Errores 5XX (servidor) --

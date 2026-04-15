@@ -1,0 +1,97 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f6f8;
+  color: #1f2937;
+}
+
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  width: 100%; /* Asegura que ocupe todo el ancho */
+}
+
+.sidebar {
+  width: 240px;
+  min-width: 240px; /* EVITA QUE SE MACHAQUE: Bloquea el ancho del panel */
+  background: #111827;
+  color: white;
+  padding: 20px;
+  flex-shrink: 0;   /* EVITA QUE SE MACHAQUE: Impide que el contenido derecho lo empuje */
+}
+
+.sidebar h2 {
+  margin-bottom: 20px;
+}
+
+.nav-link {
+  display: block;
+  background: #1f2937;
+  color: white;
+  text-decoration: none;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.nav-link:hover {
+  background: #374151;
+}
+
+.nav-link.active {
+  background: #2563eb;
+}
+
+.main-content {
+  flex: 1;          /* HACE QUE EL CONTENIDO OCUPE EL RESTO: Sin empujar al lateral */
+  padding: 30px;
+  min-width: 0;     /* Evita desbordamientos de cajas de texto o código */
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 12px;
+}
+
+input, textarea, select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #1d4ed8;
+}
+
+.feedback {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.response-box {
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 10px;
+  border-radius: 6px;
+  min-height: 80px;
+}

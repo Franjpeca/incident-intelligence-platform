@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Crear incidencia</title>
+  <link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+
+<div class="app-layout">
+
+  <aside class="sidebar">
+      <h2>Incident UI</h2>
+      <a class="nav-link" href="/index.html">Home</a>
+      <a class="nav-link active" href="/pages/create-incident.html">Crear incidencia</a>
+      <a class="nav-link" href="/pages/view-incident.html">Ver incidencias</a>
+      <a class="nav-link" href="/pages/update-incident.html">Actualizar incidencia</a>
+  </aside>
+
+  <main class="main-content">
+    <h1>Crear incidencia</h1>
+
+    <div class="card">
+      <form id="create-form">
+
+        <div class="form-group">
+          <label>Titulo</label>
+          <input id="title" type="text" required>
+        </div>
+
+        <div class="form-group">
+          <label>Descripcion</label>
+          <textarea id="description" required></textarea>
+        </div>
+ <!-- 
+        <div class="form-group">
+          <label>Estado</label>
+          <select id="status">
+            <option value="open">open</option>
+            <option value="in_progress">in_progress</option>
+            <option value="closed">closed</option>
+          </select>
+        </div>
+ -->
+        <button type="submit">Crear incidencia</button>
+
+      </form>
+    </div>
+
+    <div class="card">
+      <p id="feedback" class="feedback"></p>
+      <pre id="response" class="response-box"></pre>
+    </div>
+
+  </main>
+
+</div>
+
+<script src="../assets/js/config.js"></script>
+<script src="../assets/js/common.js"></script>
+<script src="../assets/js/create-incident.js"></script>
+
+</body>
+</html>

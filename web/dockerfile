@@ -1,0 +1,8 @@
+# Usamos la imagen oficial de Nginx
+FROM nginx:alpine
+
+# Copiamos todo el contenido de nuestra carpeta web al directorio que Nginx usa para servir archivos
+COPY . /usr/share/nginx/html
+
+# Exponemos el puerto 80 (el estandar para webs)
+EXPOSE 80

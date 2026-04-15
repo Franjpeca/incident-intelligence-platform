@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Actualizar incidencia</title>
+  <link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+
+<div class="app-layout">
+
+  <aside class="sidebar">
+    <h2>Incident UI</h2>
+
+    <a class="nav-link" href="/index.html">Home</a>
+    <a class="nav-link" href="/pages/create-incident.html">Crear incidencia</a>
+    <a class="nav-link" href="/pages/view-incident.html">Ver incidencias</a>
+    <a class="nav-link active" href="/pages/update-incident.html">Actualizar incidencia</a>
+  </aside>
+
+  <main class="main-content">
+    <h1>Actualizar incidencia</h1>
+
+    <!-- 🔵 ACTUALIZACION COMPLETA -->
+    <div class="card">
+      <h3>Actualizar incidencia</h3>
+
+      <form id="update-form">
+
+        <div class="form-group">
+          <label>ID</label>
+          <input id="update-id" type="number" required>
+        </div>
+
+        <div class="form-group">
+          <label>Titulo</label>
+          <input id="update-title" type="text">
+        </div>
+
+        <div class="form-group">
+          <label>Descripcion</label>
+          <textarea id="update-description"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Estado</label>
+          <select id="update-status">
+            <option value="">-- no cambiar --</option>
+            <option value="open">open</option>
+            <option value="in_progress">in_progress</option>
+            <option value="closed">closed</option>
+          </select>
+        </div>
+
+        <button type="submit">Actualizar incidencia</button>
+
+      </form>
+
+      <p id="update-feedback" class="feedback"></p>
+      <pre id="update-response" class="response-box"></pre>
+    </div>
+
+    <!-- 🟡 SOLO ESTADO -->
+    <div class="card">
+      <h3>Actualizar solo estado</h3>
+
+      <form id="status-form">
+
+        <div class="form-group">
+          <label>ID</label>
+          <input id="status-id" type="number" required>
+        </div>
+
+        <div class="form-group">
+          <label>Estado</label>
+          <select id="status-only">
+            <option value="open">open</option>
+            <option value="in_progress">in_progress</option>
+            <option value="closed">closed</option>
+          </select>
+        </div>
+
+        <button type="submit">Actualizar estado</button>
+
+      </form>
+
+      <p id="status-feedback" class="feedback"></p>
+      <pre id="status-response" class="response-box"></pre>
+    </div>
+
+  </main>
+
+</div>
+
+<script src="../assets/js/config.js"></script>
+<script src="../assets/js/common.js"></script>
+<script src="../assets/js/update-incident.js"></script>
+
+</body>
+</html>

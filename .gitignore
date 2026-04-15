@@ -41,4 +41,6 @@ llm-service/app/core/logs/
 
 docs/* . r a r 
  
- 
+*.rar
+*.zip
+*.7z
