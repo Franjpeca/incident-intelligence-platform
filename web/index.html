@@ -24,28 +24,7 @@
         <p>Base para pruebas E2E con Playwright.</p>
       </div>
 
-      <div class="card">
-        <h3>Test conexión API</h3>
-        <button onclick="testApi()">Probar conexión</button>
-        <p id="result"></p>
-      </div>
     </main>
   </div>
-
-  <script>
-    function testApi() {
-      const result = document.getElementById("result");
-      result.textContent = "Probando...";
-
-      fetch("http://localhost:8000/health")
-        .then(res => res.json())
-        .then(data => {
-          result.textContent = "OK: " + JSON.stringify(data);
-        })
-        .catch(err => {
-          result.textContent = "ERROR: " + err.message;
-        });
-    }
-  </script>
 </body>
 </html>
