@@ -14,7 +14,7 @@ from playwright.sync_api import expect
 
 
 @pytest.fixture
-def created_incident_id(page, base_url):
+def create_incident_id(page, base_url):
     # Obtenemos la pagina como objeto y navegamos
     create_page = CreateIncidentPage(page, base_url)
     create_page.goto()
@@ -45,10 +45,10 @@ def created_incident_id(page, base_url):
         )
 
 # Funcion que realiza el test de observar una incidencia usando el id
-# created_incident_id para poder usar la funcion auxiliar de crear incidencia
-def test_view_incident_by_id(page, base_url, created_incident_id):
+# create_incident_id para poder usar la funcion auxiliar de crear incidencia
+def test_view_incident_by_id(page, base_url, create_incident_id):
     # Creamos la incidencia
-    incident_id = created_incident_id
+    incident_id = create_incident_id
     # Creamos la pagina de ver incidencias
     view_page = ViewIncidentPage(page, base_url)
     # Navegamos a la pagina
@@ -70,10 +70,10 @@ def test_view_incident_by_id(page, base_url, created_incident_id):
     assert '"title": "incident for search"' in search_response
 
 # Funcion test que prueba a mostrar todas las incidencias
-# created_incident_id para poder usar la funcion auxiliar de crear incidencia
-def test_view_all_incidents(page, base_url, created_incident_id):
+# create_incident_id para poder usar la funcion auxiliar de crear incidencia
+def test_view_all_incidents(page, base_url, create_incident_id):
     # Creamos la incidencia
-    incident_id = created_incident_id
+    incident_id = create_incident_id
     # Creamos la pagina de ver incidencias
     view_page = ViewIncidentPage(page, base_url)
     # Navegamos a la pagina
