@@ -6,6 +6,7 @@ ENV/
 incident-service/.incident-venv
 llm-service/llm-venv
 llm-service/.llm-venv
+playwright-tests/.playwright-venv
 
 __pycache__/
 *.py[cod]

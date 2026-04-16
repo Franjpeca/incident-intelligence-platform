@@ -3,17 +3,23 @@ import logging.config
 from pathlib import Path
 import os
 
-# Usamos una variable para el nombre del servicio, así el archivo es reutilizable
 def setup_logging(service_name: str = "llm-service"):
-    LOG_DIR = Path("logs")
-    LOG_DIR.mkdir(exist_ok=True)
+    default_log_dir = Path(__file__).resolve().parent / "logs"
+    env_log_path = os.getenv("LOG_DIR_PATH")
+
+    if env_log_path:
+        LOG_DIR = Path(env_log_path)
+    else:
+        LOG_DIR = default_log_dir
+
+    LOG_DIR.mkdir(parents=True, exist_ok=True)
+    log_file_path = LOG_DIR / f"{service_name}.log"
 
     logging.config.dictConfig({
         "version": 1,
         "disable_existing_loggers": False,
         "formatters": {
             "standard": {
-                # Añadimos el service_name al string para identificarlo en la consola unificada de Docker
                 "format": f"%(asctime)s | %(levelname)s | {service_name} | %(name)s | %(message)s",
                 "datefmt": "%Y-%m-%d %H:%M:%S"
             },
@@ -26,21 +32,22 @@ def setup_logging(service_name: str = "llm-service"):
                 "class": "logging.StreamHandler",
                 "level": "INFO",
                 "formatter": "standard",
-                "stream": "ext://sys.stdout", # Forzamos salida estándar para Docker
+                "stream": "ext://sys.stdout",
             },
             "file": {
-                # Cambiamos a RotatingFileHandler: evita que el log llene el disco del servidor
                 "class": "logging.handlers.RotatingFileHandler",
                 "level": "DEBUG",
                 "formatter": "detailed",
-                "filename": str(LOG_DIR / f"{service_name}.log"),
-                "maxBytes": 10485760, # 10MB
+                "filename": str(log_file_path),
+                "maxBytes": 10485760,
                 "backupCount": 3,
                 "encoding": "utf-8",
             },
         },
         "root": {
-            "level": "INFO", # INFO en root evita que librerías externas saturen la consola
+            "level": "INFO",
             "handlers": ["console", "file"],
         },
     })
+    
+    return logging.getLogger(service_name)

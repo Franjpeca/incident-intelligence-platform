@@ -3,16 +3,23 @@ import logging.config
 from pathlib import Path
 import os
 
-def setup_logging(service_name: str = "app-service"):
-    LOG_DIR = Path("logs")
-    LOG_DIR.mkdir(exist_ok=True)
+def setup_logging(service_name: str = "incident-service"):
+    default_log_dir = Path(__file__).resolve().parent / "logs"
+    env_log_path = os.getenv("LOG_DIR_PATH")
+
+    if env_log_path:
+        LOG_DIR = Path(env_log_path)
+    else:
+        LOG_DIR = default_log_dir
+
+    LOG_DIR.mkdir(parents=True, exist_ok=True)
+    log_file_path = LOG_DIR / f"{service_name}.log"
 
     logging.config.dictConfig({
         "version": 1,
         "disable_existing_loggers": False,
         "formatters": {
             "standard": {
-                # Añadimos el service_name al formato para identificarlo en Docker
                 "format": f"%(asctime)s | %(levelname)s | {service_name} | %(name)s | %(message)s"
             },
             "detailed": {
@@ -22,16 +29,16 @@ def setup_logging(service_name: str = "app-service"):
         "handlers": {
             "console": {
                 "class": "logging.StreamHandler",
-                "level": os.getenv("LOG_LEVEL", "INFO"), # Dinamico
+                "level": os.getenv("LOG_LEVEL", "INFO"),
                 "formatter": "standard",
                 "stream": "ext://sys.stdout",
             },
             "file": {
-                "class": "logging.handlers.RotatingFileHandler", # Mejor que FileHandler (rota archivos)
+                "class": "logging.handlers.RotatingFileHandler",
                 "level": "DEBUG",
                 "formatter": "detailed",
-                "filename": str(LOG_DIR / f"{service_name}.log"),
-                "maxBytes": 10485760, # 10MB y crea uno nuevo
+                "filename": str(log_file_path),
+                "maxBytes": 100000000,
                 "backupCount": 5,
                 "encoding": "utf-8",
             },

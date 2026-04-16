@@ -40,6 +40,7 @@ logger = logging.getLogger(__name__)
 async def lifespan(app: FastAPI):
     logger.info("Iniciando microservicio de incidencias")
     Base.metadata.create_all(bind=engine)
+    logger.info("Microservicio de incidencias iniciado")
     yield
     logger.info("Apagando microservicio de incidencias")
 
