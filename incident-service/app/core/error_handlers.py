@@ -8,6 +8,7 @@ from app.core.exceptions import (
     InvalidLLMResponseError,
     DatabaseOperationError,
     FieldError,
+    LLMServiceUnavailableError,
 )
 
 ## -- Errores 4XX (cliente) --

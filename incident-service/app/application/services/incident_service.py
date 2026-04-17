@@ -13,6 +13,7 @@ from app.core.exceptions import (
     DatabaseOperationError,
     AnalysisNotFoundError,
     FieldError,
+    LLMServiceUnavailableError,
 )
 
 logger = logging.getLogger("incident-service")
@@ -34,7 +35,7 @@ def create_incident(data: IncidentCreateRequest, db: Session) -> Incident:
 
         logger.info(f"Incidencia: '{data.title}' creada exitosamente con ID: {incident.id}")
         return incident
-    except Exception:
+    except Exception as e:
         logger.exception(f"Error fatal al insertar incidencia en DB: {str(e)}")
 
         db.rollback()
@@ -45,7 +46,7 @@ def get_incidents(db: Session):
     try:
         logger.info(f"Obteniendo todas las incidencias")
         return db.query(Incident).all()
-    except Exception:
+    except Exception as e:
         logger.exception(f"Error la intentar obtener todas las incidencias: {str(e)}")
         raise DatabaseOperationError("Error al obtener las incidencias")
 
@@ -85,7 +86,7 @@ def update_incident_status(incident_id: int, status: IncidentStatus, db: Session
         db.refresh(incident)
         logger.info(f"Estado de la incidencia con ID: {incident_id} actualizado")
         return incident
-    except Exception:
+    except Exception as e:
         logger.warning(f"Fallo en la actualización de la incidencia: ID {incident_id}")
         db.rollback()
         raise DatabaseOperationError("Error al actualizar el estado de la incidencia")
@@ -106,7 +107,7 @@ def delete_incident(incident_id: int, db: Session):
         db.commit()
         logger.info(f"Incidencia eliminada con ID: {incident_id}")
         return True
-    except Exception:
+    except Exception as e:
         logger.warning(f"Fallo en la eliminacion de la incidencia: ID {incident_id}")
         db.rollback()
         raise DatabaseOperationError("Error al eliminar la incidencia")
@@ -129,10 +130,8 @@ def update_incident(incident_id: int, data, db: Session):
 
         if data.title is not None:
             incident.title = data.title
-
         if data.description is not None:
             incident.description = data.description
-
         if data.status is not None:
             incident.status = data.status.value
 
@@ -143,7 +142,7 @@ def update_incident(incident_id: int, data, db: Session):
     except ValueError:
         db.rollback()
         raise
-    except Exception:
+    except Exception as e:
         logger.warning(f"Fallo en la eliminacion de la incidencia: ID {incident_id}")
         db.rollback()
         raise DatabaseOperationError("Error al actualizar la incidencia")
@@ -170,27 +169,37 @@ def analyze_incident(incident_id: int, db: Session):
 
     # Si el sistema de reglas lo indica, usamos el LLM
     if rules_result.use_llm:
-        logger.info(f"Las reglas dictan el uso de LLM para analizar la incidencia {incident_id}")
-        analysis_type = rules_result.analysis_type
+        try:
+            logger.info(f"Las reglas dictan el uso de LLM para analizar la incidencia {incident_id}")
+            analysis_type = rules_result.analysis_type
 
-        # Establecemos el texto a analizar, en este caso el titulo y la descripcion de la incidencia
-        text_to_analyze = f"Title: {incident.title}\nDescription: {incident.description}"
+            # Establecemos el texto a analizar, en este caso el titulo y la descripcion de la incidencia
+            text_to_analyze = f"Title: {incident.title}\nDescription: {incident.description}"
 
-        logger.info(f"Analizando incidencia {incident_id} usando LLM con el prompt: {analysis_type}")
-        analysis = analyze_text_with_llm(text_to_analyze, analysis_type)
+            logger.info(f"Analizando incidencia {incident_id} usando LLM con el modo: {analysis_type}")
+            analysis = analyze_text_with_llm(text_to_analyze, analysis_type)
 
-        logger.info(f"Analisis completado para la incidencia {incident_id}, comprobadodo la respuesta del LLM")
-        # Comprobamos que el json obtenido del LLM tiene los campos necesarios, si no es asi, lanzamos un error
-        if not all(key in analysis for key in ["summary", "category", "priority", "confidence"]):
-            logger.warning(f"Fallo en la generacion del analisis por parte del LLM para la incidencia: {incident_id}")
-            raise InvalidLLMResponseError("Respuesta invalida del servicio LLM")
+            logger.info(f"Analisis completado para la incidencia {incident_id}, comprobadodo la respuesta del LLM")
+            # Comprobamos que el json obtenido del LLM tiene los campos necesarios, si no es asi, lanzamos un error
+            if not all(key in analysis for key in ["summary", "category", "priority", "confidence"]):
+                logger.warning(f"Fallo en la generacion del analisis por parte del LLM para la incidencia: {incident_id}")
+                raise InvalidLLMResponseError("Respuesta invalida del servicio LLM")
 
+            # GUardamos el resultado obtenido por el LLM
+            incident.analysis_summary = analysis["summary"]
+            incident.category = analysis["category"]
+            incident.priority = analysis["priority"]
+            incident.analysis_confidence = analysis["confidence"]
 
-        # GUardamos el resultado obtenido por el LLM
-        incident.analysis_summary = analysis["summary"]
-        incident.category = analysis["category"]
-        incident.priority = analysis["priority"]
-        incident.analysis_confidence = analysis["confidence"]
+        except (LLMServiceUnavailableError, InvalidLLMResponseError) as e:
+                    # Fallback del LLM, se guarda como analis el resultado de las reglas
+                    logger.warning(f"Fallo en servicio LLM ({str(e)}). Aplicando fallback de reglas para ID {incident_id}")
+                    
+                    incident.analysis_summary = f"Fallback: Sin resumen"
+                    incident.category = "Fallback: Sin categoria"
+                    incident.priority = rules_result.priority
+                    incident.analysis_confidence = 0.5
+
     # Si no, pues simplemente guardamos el resultado
     else:
         incident.analysis_summary = rules_result.summary
@@ -206,7 +215,7 @@ def analyze_incident(incident_id: int, db: Session):
         db.refresh(incident)
 
         return incident
-    except Exception:
+    except Exception as e:
         logger.warning(f"Fallo al guardar el resultado del analisis para la incidencia: ID {incident_id}")
         db.rollback()
         raise DatabaseOperationError("Error al guardar el analisis")
