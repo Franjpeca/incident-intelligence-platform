@@ -12,16 +12,16 @@ body {
 .app-layout {
   display: flex;
   min-height: 100vh;
-  width: 100%; /* Asegura que ocupe todo el ancho */
+  width: 100%;
 }
 
 .sidebar {
   width: 240px;
-  min-width: 240px; /* EVITA QUE SE MACHAQUE: Bloquea el ancho del panel */
+  min-width: 240px;
   background: #111827;
   color: white;
   padding: 20px;
-  flex-shrink: 0;   /* EVITA QUE SE MACHAQUE: Impide que el contenido derecho lo empuje */
+  flex-shrink: 0;
 }
 
 .sidebar h2 {
@@ -47,9 +47,9 @@ body {
 }
 
 .main-content {
-  flex: 1;          /* HACE QUE EL CONTENIDO OCUPE EL RESTO: Sin empujar al lateral */
+  flex: 1;
   padding: 30px;
-  min-width: 0;     /* Evita desbordamientos de cajas de texto o código */
+  min-width: 0;
 }
 
 .card {

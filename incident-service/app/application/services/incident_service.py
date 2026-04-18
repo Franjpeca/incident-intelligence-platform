@@ -87,7 +87,7 @@ def update_incident_status(incident_id: int, status: IncidentStatus, db: Session
         logger.info(f"Estado de la incidencia con ID: {incident_id} actualizado")
         return incident
     except Exception as e:
-        logger.warning(f"Fallo en la actualización de la incidencia: ID {incident_id}")
+        logger.warning(f"Fallo en la actualizacion de la incidencia: ID {incident_id}")
         db.rollback()
         raise DatabaseOperationError("Error al actualizar el estado de la incidencia")
 

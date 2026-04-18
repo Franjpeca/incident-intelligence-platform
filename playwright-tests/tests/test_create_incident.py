@@ -17,7 +17,7 @@ def test_create_incident(page, base_url):
 
     # Buscamos evitar condiciones de carrera (se ejecuta antes los asertos que la respuesta)
     feedback_locator = create_page.get_feedback_locator()
-    # Usamos expect para manejar la asincronía: reintenta hasta que el texto aparece 
+    # Usamos expect para manejar la asincronia, reintentamos hasta que el texto aparece 
     # evitando fallos si la API tarda unos milisegundos, espera hasta un maximo de 5 segundos
     expect(feedback_locator).to_contain_text("Incidencia creada correctamente", ignore_case=True)
 

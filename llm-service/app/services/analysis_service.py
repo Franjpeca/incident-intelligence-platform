@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 def analyze_text(text: str, analysis_type: str = None) -> AnalysisResponse:
     logging.info("Iniciando analisis de texto usando LLM")
     # Cargamos el modelo y el tokenizer
-    # El modelo se carga una sola vez y se reutiliza en cada llamada a la función
+    # El modelo se carga una sola vez y se reutiliza en cada llamada a la funcion
     logging.info("Cargando el modelo LLM")
     _tokenizer, _model = load_model()
 

@@ -5,8 +5,8 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copiamos todo el código
+# Copiamos todo el codigo
 COPY . .
 
-# Comando simple. Los parámetros los daremos desde el Docker Compose
+# Comando simple. Los parametros los daremos desde el Docker Compose
 CMD ["pytest"]

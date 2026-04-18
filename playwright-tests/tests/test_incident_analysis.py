@@ -31,9 +31,9 @@ def created_incident_id(page, base_url):
         #Si no se ha recibido o si no ha devuelto un id valido
         error_visible_en_web = feedback_locator.inner_text()
 
-        # Forzamos el fallo del test con una explicación humana y técnica
+        # Forzamos el fallo del test
         pytest.fail(
-            f"La precondición falló: No se pudo crear la incidencia.\n"
+            f"La precondicion fallo: No se pudo crear la incidencia.\n"
             f"Mensaje devuelto por el microservicio: '{error_visible_en_web}'"
         )
 

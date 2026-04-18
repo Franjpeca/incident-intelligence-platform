@@ -1,5 +1,5 @@
 CRITICAL_KEYWORDS = {
-    "caido", "caída", "produccion", "producción",
+    "caido", "caída", "produccion", "produccion",
     "urgente", "critico", "crítico", "no responde", "down"
 }
 
