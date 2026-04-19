@@ -6,6 +6,8 @@ from app.schemas.analysis_response import AnalysisResponse
 # Importaciones de excepciones propias
 from app.core.exceptions import ModelInferenceError
 
+import threading
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -48,14 +50,16 @@ def analyze_text(text: str, analysis_type: str = None) -> AnalysisResponse:
     logging.info("Iniciando analisis de texto usando LLM")
     # Cargamos el modelo y el tokenizer
     # El modelo se carga una sola vez y se reutiliza en cada llamada a la funcion
-    tokenizer, model = get_model()
+    tokenizer, model, lock = get_model()
 
     input_text = get_input_text(tokenizer, analysis_type, text)
     # Transformamos este texto a tokens que entendera el modelo y los movemos a memoria
     # Es cargar la entrada
     inputs = _tokenize_input(input_text, tokenizer, model.device)
     # Generamos la respuesta del modelo
-    outputs = _generate_response(model, inputs)
+    with lock:
+        logging.info("Entrando al lock de inferencia. Iniciando uso del modelo...")
+        outputs = _generate_response(model, inputs)
 
     # La respuesta viene mezclada con la entrada, por lo que hay que separar la parte de la respuesta que nos interesa
     return parse_and_validate_response(outputs, inputs, tokenizer)

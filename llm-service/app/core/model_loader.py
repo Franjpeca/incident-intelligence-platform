@@ -6,6 +6,7 @@ from app.core.config import MODEL_ID
 from app.core.exceptions import ModelLoadError
 
 import logging
+import threading
 
 logger = logging.getLogger(__name__)
 
@@ -13,12 +14,15 @@ logger = logging.getLogger(__name__)
 # Se busca evitar cargarlo cada vez que se haga una peticion
 _tokenizer = None
 _model = None
+# Para evitar problemas de rendimiento al acceder al modelo
+# Se indica fuera para evitar problemas de condiciones de carrera
+_inference_lock = threading.Lock()
 
 # Funcion para obtener el modelo, lo carga si no esta ya cargado
 def get_model():
     # Tomamos las variables gloables, y si no esta cargado el modelo y tokenizer, los cargamos
     logging.info("Comenzando la carga del modelo")
-    global _tokenizer, _model
+    global _tokenizer, _model, _inference_lock
 
     # Probamos a realizar la carga de las dos variables
     try:
@@ -40,7 +44,7 @@ def get_model():
         raise ModelLoadError("Error al cargar el modelo")
 
     logging.info("Modelo y tokenizer cargados con exito")
-    return _tokenizer, _model
+    return _tokenizer, _model, _inference_lock
 
 
 
