@@ -6,6 +6,7 @@ import os
 def setup_logging(service_name: str = "llm-service"):
     default_log_dir = Path(__file__).resolve().parent / "logs"
     env_log_path = os.getenv("LOG_DIR_PATH")
+    log_level = os.getenv("LOG_LEVEL", "INFO")
 
     if env_log_path:
         LOG_DIR = Path(env_log_path)
@@ -30,7 +31,7 @@ def setup_logging(service_name: str = "llm-service"):
         "handlers": {
             "console": {
                 "class": "logging.StreamHandler",
-                "level": "INFO",
+                "level": log_level,
                 "formatter": "standard",
                 "stream": "ext://sys.stdout",
             },
@@ -45,7 +46,7 @@ def setup_logging(service_name: str = "llm-service"):
             },
         },
         "root": {
-            "level": "INFO",
+            "level": log_level,
             "handlers": ["console", "file"],
         },
     })

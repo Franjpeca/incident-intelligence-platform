@@ -1,0 +1,12 @@
+FROM cimg/python:3.11-browsers
+
+WORKDIR /app
+
+# Copiamos requirements
+COPY requirements.txt .
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+CMD ["pytest"]

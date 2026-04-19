@@ -58,6 +58,7 @@ services:
           retries: 10
           start_period: 30s
 
+  # Web que simula el uso de nuestra API
   frontend:
       build: ./web
       container_name: incident-frontend
@@ -68,6 +69,7 @@ services:
       networks:
         - app-network
 
+  # Contenedor para las pruebas de playwright automaticas al levantar los servicios
   playwright-tests:
       build: ./playwright-tests
       container_name: playwright-tests
@@ -81,6 +83,22 @@ services:
       environment:
         - BASE_URL=http://frontend:80
       command: pytest --base-url http://frontend:80
+
+  # Conteneoor para las pruebas de playwright al levantar los servicios
+  selenium-tests:
+      build: ./selenium-tests
+      container_name: selenium-tests
+      depends_on:
+        frontend:
+          condition: service_started
+        llm-service:
+          condition: service_healthy
+      networks:
+        - app-network
+      environment:
+        - BASE_URL=http://frontend:80
+        - TESTS_IN_PRODUCTION=True
+      command: pytest
 
 volumes:
   postgres_data:
