@@ -14,7 +14,8 @@ logger = logging.getLogger(__name__)
 _tokenizer = None
 _model = None
 
-def load_model():
+# Funcion para obtener el modelo, lo carga si no esta ya cargado
+def get_model():
     # Tomamos las variables gloables, y si no esta cargado el modelo y tokenizer, los cargamos
     logging.info("Comenzando la carga del modelo")
     global _tokenizer, _model
@@ -29,7 +30,9 @@ def load_model():
             logging.info("Modelo no cargado, cargandolo")
             _model = AutoModelForCausalLM.from_pretrained(
                 MODEL_ID,
-                device_map="auto"  # Indicamos que se cargue en GPU, si no se puede, se cargara en CPU
+                device_map="auto",  # Indicamos que se cargue en GPU, si no se puede, se cargara en CPU
+                torch_dtype="auto",# Ajusta automaticamente a float16 si hay GPU, mas eficiente
+                low_cpu_mem_usage=True # Mejora la carga del modelo
             )
     # Si no funciona, entonces lanzamos error de carga del modelo
     except Exception:

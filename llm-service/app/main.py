@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from app.api.v1.routers.analysis_router import router as analysis_router
 from app.core.config import LOAD_MODEL_ON_STARTUP
-from app.core.model_loader import load_model, is_model_loaded
+from app.core.model_loader import get_model, is_model_loaded
 
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -45,7 +45,7 @@ async def lifespan(app: FastAPI):
     # En base a una variable configurable, se establece cuando cargar el modelo
     if LOAD_MODEL_ON_STARTUP:
         logger.info("Se procede a realizar la carga del modelo ...")
-        load_model()
+        get_model()
         if is_model_loaded():
             logger.info("Modelo cargado correctamente en memoria")
         else:

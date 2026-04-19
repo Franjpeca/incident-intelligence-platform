@@ -73,6 +73,7 @@ services:
   playwright-tests:
       build: ./playwright-tests
       container_name: playwright-tests
+      shm_size: '2gb' # Para poder usar memoria compartida
       depends_on:
             frontend:
               condition: service_started
@@ -88,6 +89,7 @@ services:
   selenium-tests:
       build: ./selenium-tests
       container_name: selenium-tests
+      shm_size: '2gb' # Para poder usar memoria compartida
       depends_on:
         frontend:
           condition: service_started

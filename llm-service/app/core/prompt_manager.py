@@ -54,3 +54,35 @@ def build_prompt(analysis_type: str | None, **kwargs: str) -> str:
     except KeyError as exc:
         logging.error("Error al cargar el prompt, error en los campos")
         raise PromptFormattingError(f"Campo faltante: {exc.args[0]}") from exc
+    
+
+
+def get_input_text(tokenizer, analysis_type: str | None, text: str) -> str:
+    # Construimos el prompt con el texto del cliente y nuestra plantilla
+    logging.info(f"Construyendo el prompt del modelo con text: {text} y tipo de analisis: {analysis_type}")
+    prompt = build_prompt(
+        analysis_type=analysis_type,
+        text=text
+    )
+
+    # Necesario para indicar al modelo quienes somos y poder darle una entrada
+    messages = [
+        {"role": "user", "content": prompt}
+    ]
+
+    try:
+        # Modificamos nuestro texto + plantilla para agregar campos necesarios para la entrada
+        # Son etiquetas especiales necesitadas por el modelo
+        logging.info("Aplicando etiquetas al prompt del modelo")
+        input_text = tokenizer.apply_chat_template(
+            messages,
+            tokenize=False,
+            add_generation_prompt=True
+        )
+    except Exception as exc:
+            logging.error(f"Error al aplicar chat_template: {exc}")
+            # Lanzamos nuestra excepcion
+            raise PromptFormattingError(f"Error al preparar el formato del LLM: {exc}") from exc
+    
+    # Devolvemos si no hay ningun error
+    return input_text
