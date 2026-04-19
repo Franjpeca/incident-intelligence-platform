@@ -6,38 +6,6 @@ from pages.create_incident_page import CreateIncidentPage
 from pages.update_delete_incident_page import UpdateDeleteIncidentPage
 from pages.view_incident_page import ViewIncidentPage
 
-# Funcion auxiliar para crear una incidencia
-@pytest.fixture
-def create_incident_id(page, base_url):
-    # Obtenemos la pagina como objeto y navegamos
-    create_page = CreateIncidentPage(page, base_url)
-    create_page.goto()
-
-    # Creamos una incidencia
-    create_page.create_incident("Incident for update", "Description for update")
-
-    # Obtenemos el feedback, para ver si se ha ejecutado bien
-    feedback_locator = create_page.get_feedback_locator()
-
-    try:
-        # Esperamos el mensaje de exito
-        expect(feedback_locator).to_contain_text("Incidencia creada correctamente", ignore_case=True)
-
-        # En tal caso, extraemos el id
-        response_text = create_page.get_response_locator().inner_text()
-        incident_data = json.loads(response_text)
-        return incident_data["id"]
-
-    except AssertionError:
-        #Si no se ha recibido o si no ha devuelto un id valido
-        error_visible_en_web = feedback_locator.inner_text()
-
-        # Forzamos el fallo del test
-        pytest.fail(
-            f"La precondicion fallo: No se pudo crear la incidencia.\n"
-            f"Mensaje devuelto por el microservicio: '{error_visible_en_web}'"
-        )
-
 
 # Funcion auxiliar que comprueba que una incidencia existe y que puede recuperarse por id
 def assert_incident_exists(view_page, incident_id, expected_title=None):

@@ -1,6 +1,6 @@
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from app.api.v1.routers.analysis_router import router as analysis_router
 from app.core.config import LOAD_MODEL_ON_STARTUP
 from app.core.model_loader import get_model, is_model_loaded
@@ -85,7 +85,10 @@ app.add_exception_handler(Exception, generic_exception_handler)
 # Endpoint para comprobar el estado del microservicio y si el modelo esta cargado o no
 @app.get("/health")
 def health():
-    return {"status": "ok", "model_loaded": is_model_loaded()}
+    if is_model_loaded():
+        return {"status": "ok", "model_loaded": True}
+
+    raise HTTPException(status_code=503, detail="Model not loaded yet")
 
 # Registro de routers de la API (endpoints)
 app.include_router(analysis_router)

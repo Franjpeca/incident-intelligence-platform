@@ -6,42 +6,11 @@ from pages.create_incident_page import CreateIncidentPage
 from pages.incident_analysis_page import IncidentAnalysisPage
 
 
-@pytest.fixture
-def created_incident_id(page, base_url):
-    # Obtenemos la pagina como objeto y navegamos
-    create_page = CreateIncidentPage(page, base_url)
-    create_page.goto()
-
-    # Creamos una incidencia
-    create_page.create_incident("Incident for analysis", "Description for analysis")
-
-    # Obtenemos el feedback, para ver si se ha ejecutado bien
-    feedback_locator = create_page.get_feedback_locator()
-
-    try:
-        # Esperamos el mensaje de exito
-        expect(feedback_locator).to_contain_text("Incidencia creada correctamente", ignore_case=True)
-
-        # En tal caso, extraemos el id
-        response_text = create_page.get_response_locator().inner_text()
-        incident_data = json.loads(response_text)
-        return incident_data["id"]
-
-    except AssertionError:
-        #Si no se ha recibido o si no ha devuelto un id valido
-        error_visible_en_web = feedback_locator.inner_text()
-
-        # Forzamos el fallo del test
-        pytest.fail(
-            f"La precondicion fallo: No se pudo crear la incidencia.\n"
-            f"Mensaje devuelto por el microservicio: '{error_visible_en_web}'"
-        )
-
 
 # Funcion test que prueba lanzar el analisis de una incidencia
-def test_analyze_incident(page, base_url, created_incident_id):
+def test_analyze_incident(page, base_url, create_incident_id):
     # Creamos la incidencia
-    incident_id = created_incident_id
+    incident_id = create_incident_id
     # Creamos la pagina de analisis
     analysis_page = IncidentAnalysisPage(page, base_url)
     # Navegamos a la pagina
@@ -72,9 +41,9 @@ def test_analyze_incident(page, base_url, created_incident_id):
 
 
 # Funcion test que prueba obtener el analisis de una incidencia
-def test_get_incident_analysis(page, base_url, created_incident_id):
+def test_get_incident_analysis(page, base_url, create_incident_id):
     # Creamos la incidencia
-    incident_id = created_incident_id
+    incident_id = create_incident_id
     # Creamos la pagina de analisis
     analysis_page = IncidentAnalysisPage(page, base_url)
     # Navegamos a la pagina
