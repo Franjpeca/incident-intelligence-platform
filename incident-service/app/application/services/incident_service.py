@@ -19,6 +19,7 @@ from app.core.exceptions import (
     AnalysisNotFoundError,
     FieldError,
     LLMServiceUnavailableError,
+    BusinessRuleError,
 )
 
 logger = logging.getLogger("incident-service")
@@ -93,6 +94,16 @@ def delete_incident(incident_id: int, db: Session) -> bool:
 
     # Consultamos y vemos si existe
     incident = get_incident_by_id(incident_id, db)
+
+    # Consultamos la regla de negocio sobre si se puede borrar
+    # Nota: Se lanzan aqui errores porque indicarlo en la regla no es correcto, no es su responsabilidad
+    # y llevarse esto a una clase seria redundante
+    if not incident.can_be_deleted():
+        logger.warning("Intento de borrado no permitido para incidencia id=%s", incident_id)
+        raise BusinessRuleError(
+            f"No se puede eliminar la incidencia {incident_id} porque su estado es {incident.status}. "
+            "Solo se permite el borrado en estado CLOSED."
+        )
 
     # Si la encuentra, la eliminamos
     result = db_operations.delete(db, incident)

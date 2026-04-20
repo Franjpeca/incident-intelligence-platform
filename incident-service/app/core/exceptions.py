@@ -7,12 +7,16 @@ class AppError(Exception):
 # No hace falta cuerpo en las clases, solamente sirven para identificar el tipo de error y 
 # manejarlo de forma adecuada en los controladores
 
-# Icidente no encontrado
+# Incidencia no encontrado
 class IncidentNotFoundError(AppError):
     pass
 
 class FieldError(AppError):
     pass
+
+class BusinessRuleError(AppError):
+    pass
+
 
 
 # Analisis no existente
@@ -30,3 +34,4 @@ class InvalidLLMResponseError(AppError):
 # Fallo en la base de datos
 class DatabaseOperationError(AppError):
     pass
+

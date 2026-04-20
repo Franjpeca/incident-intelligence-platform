@@ -16,6 +16,7 @@ from app.core.exceptions import (
     InvalidLLMResponseError,
     DatabaseOperationError,
     FieldError,
+    BusinessRuleError,
 )
 
 from app.core.error_handlers import (
@@ -26,6 +27,7 @@ from app.core.error_handlers import (
     database_operation_handler,
     generic_exception_handler,
     field_error_handler,
+    business_rule_error_handler,
 )
 
 from app.core.logging_config import setup_logging
@@ -70,6 +72,7 @@ app.add_exception_handler(LLMServiceUnavailableError, llm_service_unavailable_ha
 app.add_exception_handler(InvalidLLMResponseError, invalid_llm_response_handler)
 app.add_exception_handler(DatabaseOperationError, database_operation_handler)
 app.add_exception_handler(FieldError, field_error_handler)
+app.add_exception_handler(BusinessRuleError, business_rule_error_handler)
 app.add_exception_handler(Exception, generic_exception_handler)
 
 # Endopint para probar que el microservicio esta activo

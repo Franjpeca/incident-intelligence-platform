@@ -9,6 +9,7 @@ from app.core.exceptions import (
     DatabaseOperationError,
     FieldError,
     LLMServiceUnavailableError,
+    BusinessRuleError,
 )
 
 ## -- Errores 4XX (cliente) --
@@ -35,6 +36,13 @@ async def field_error_handler(request: Request, exc: FieldError):
             "message": exc.message
         }
     )
+
+def business_rule_error_handler(request: Request, exc: BusinessRuleError):
+    return JSONResponse(
+        status_code=400,
+        content={"detail": exc.message}
+    )
+
 
 ## -- Errores 5XX (servidor) --
 

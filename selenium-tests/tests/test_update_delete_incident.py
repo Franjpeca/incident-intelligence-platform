@@ -87,6 +87,10 @@ def test_delete_incident(driver, base_url, fixture_create_incident):
     # Navegamos a la pagina
     update_page.goto()
 
+    # Actualizamos la incidencia a closed
+    update_page.update_status_only(incident_id, "closed")
+
+
     # Borramos la incidencia
     update_page.delete_incident(incident_id)
 

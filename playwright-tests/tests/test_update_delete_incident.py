@@ -122,6 +122,9 @@ def test_delete_incident(page, base_url, create_incident_id):
     # Navegamos a la pagina
     update_page.goto()
 
+    # La actualizamos como cerrada
+    update_page.update_status_only(incident_id, "closed")
+
     # Borramos la incidencia
     update_page.delete_incident(incident_id)
 
