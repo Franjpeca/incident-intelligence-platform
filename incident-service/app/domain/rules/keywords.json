@@ -1,0 +1,10 @@
+{
+  "critical": [
+    "caido", "caída", "produccion", "urgente", 
+    "critico", "crítico", "no responde", "down"
+  ],
+  "technical": [
+    "error", "exception", "timeout", "fail", 
+    "stacktrace", "log", "nullpointer"
+  ]
+}
