@@ -1,8 +1,12 @@
 import logging
+# Para incluir lo que retornan las funciones
+# Mejora la legibilidad y autocompletado en ciertos IDE
+from typing import List, Dict, Any
 
 from sqlalchemy.orm import Session
 from app.infrastructure.db.models.incident_model import Incident
 from app.schemas.incident_request import IncidentCreateRequest
+from app.schemas.incident_update_request import IncidentUpdateRequest
 from app.schemas.analysis_result import AnalysisResult
 from app.domain.enums.incident_status import IncidentStatus
 from app.infrastructure.clients.llm_service_client import analyze_text_with_llm
@@ -37,7 +41,7 @@ def create_incident(data: IncidentCreateRequest, db: Session) -> Incident:
 
 
 # Obtiene todos los registros de la tabla de la bd
-def get_incidents(db: Session):
+def get_incidents(db: Session) -> List[Incident]:
     # Para no mostrar toda la base de datos, ya que puede generar problemas de memoria, mostramos los ultimos 100
     # Se podria aplicar paginacion y scroll infinito en el front si se desea de ver todo, pero para el proposito de
     # este proyecto poner un limite es suficiente. Lo importante es controlar que a futuro no colapse el servidor
@@ -48,7 +52,7 @@ def get_incidents(db: Session):
 
 
 # Obtiene un registro de la tabla usando su id
-def get_incident_by_id(incident_id: int, db: Session):
+def get_incident_by_id(incident_id: int, db: Session) -> Incident:
     logger.info(f"Buscando incidencia con ID: {incident_id}")
     
     incident = db_operations.get_by_id(db, incident_id)
@@ -64,7 +68,7 @@ def get_incident_by_id(incident_id: int, db: Session):
 
 
 # Actualiza el estado de una incidencia
-def update_incident_status(incident_id: int, status: IncidentStatus, db: Session):
+def update_incident_status(incident_id: int, status: IncidentStatus, db: Session) -> Incident:
     logger.info(f"Actualizando estado de la incidencia con ID: {incident_id}")
     
     # Consulta la BD y busca la incidencia
@@ -83,7 +87,7 @@ def update_incident_status(incident_id: int, status: IncidentStatus, db: Session
 
 
 # Eliminar una incidencia dada su id
-def delete_incident(incident_id: int, db: Session):
+def delete_incident(incident_id: int, db: Session) -> bool:
     logger.info(f"Eliminando incidencia con ID: {incident_id}")
     # Similar a la funcion anterior
 
@@ -98,7 +102,7 @@ def delete_incident(incident_id: int, db: Session):
 
 
 # Actualiza por completo una incidencia segun el id
-def update_incident(incident_id: int, data, db: Session):
+def update_incident(incident_id: int, data: IncidentUpdateRequest, db: Session) -> Incident:
     logger.info(f"Actualizando incidencia con ID: {incident_id}")
     # Similar a las funciones anteriores
     incident = get_incident_by_id(incident_id, db)
@@ -123,7 +127,7 @@ def update_incident(incident_id: int, data, db: Session):
 
 
 # Getter del analisis de una incidencia usando el id
-def get_incident_analysis(incident_id: int, db: Session):
+def get_incident_analysis(incident_id: int, db: Session) -> Dict[str, Any]:
     logger.info(f"Obteniendo analisis de la incidencia con ID: {incident_id}")
     
     # Comprobamos si la incidencia existe, si no, error
@@ -145,7 +149,7 @@ def get_incident_analysis(incident_id: int, db: Session):
 # Funcion que analiza el texto de una incidencia segun id
 # Primero se analiza usando reglas, y dependiendo del resultado, se llamara al LLM o no
 # Tambien indicara que prompt usar en el LLM, para mas eficiencia
-def analyze_incident(incident_id: int, db: Session):
+def analyze_incident(incident_id: int, db: Session) -> Incident:
     logger.info(f"Analizando incidencia con ID: {incident_id}")
     # Obtenemos la incidencia y comprobamos que existe
     incident = get_incident_by_id(incident_id, db)
