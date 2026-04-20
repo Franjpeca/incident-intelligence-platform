@@ -1,9 +1,8 @@
-from pydantic import BaseModel
+from app.schemas.analysis_result import AnalysisResult
 
-class IncidentRulesResult(BaseModel):
+class IncidentRulesResult(AnalysisResult):
     use_llm: bool
     analysis_type: str | None = None
+    # Necesario para que hayan parametros opcionales que decidira el modelo en tal caso
     summary: str | None = None
     category: str | None = None
-    priority: str | None = None
-    confidence: int | None = None
