@@ -1,5 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, Text
-from datetime import datetime, timezone
+from sqlalchemy import Column, Integer, String, DateTime, Text, func
 from app.infrastructure.db.base import Base
 from app.domain.enums.incident_status import IncidentStatus
 
@@ -21,5 +20,17 @@ class Incident(Base):
     analysis_confidence = Column(Integer, nullable=True)
 
     # Fechas de creacion y actualizacion
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
-    updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+    created_at = Column(
+            DateTime(timezone=True), 
+            default=func.now(),
+            server_default=func.now(), 
+            nullable=False
+    )
+
+    updated_at = Column(
+        DateTime(timezone=True), 
+        default=func.now(),
+        server_default=func.now(), 
+        onupdate=func.now(), 
+        nullable=False
+    )

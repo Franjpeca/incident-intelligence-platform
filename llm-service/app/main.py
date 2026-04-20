@@ -2,7 +2,6 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, HTTPException
 from app.api.v1.routers.analysis_router import router as analysis_router
-from app.core.config import LOAD_MODEL_ON_STARTUP
 from app.core.model_loader import get_model, is_model_loaded
 
 from fastapi.middleware.cors import CORSMiddleware
@@ -31,12 +30,11 @@ from app.core.error_handlers import (
     generic_exception_handler,
 )
 
+from app.core.config import LOAD_MODEL_ON_STARTUP, ALLOWED_ORIGINS
+
 setup_logging()
 
 logger = logging.getLogger(__name__)
-
-
-app = FastAPI()
 
 
 @asynccontextmanager
@@ -62,10 +60,7 @@ app = FastAPI(
 # Permitimos conexiones, en este caso, desde nuestra web
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5500",
-        "http://127.0.0.1:5500"
-    ],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

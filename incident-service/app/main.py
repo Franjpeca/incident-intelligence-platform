@@ -30,9 +30,10 @@ from app.core.error_handlers import (
 
 from app.core.logging_config import setup_logging
 
-setup_logging("incident-service")
-setup_logging()
+from app.core.config import ALLOWED_ORIGINS
 
+
+setup_logging("incident-service")
 logger = logging.getLogger(__name__)
 
 
@@ -53,10 +54,7 @@ app = FastAPI(
 # Permitimos conexiones, en este caso, desde nuestra web
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5500",
-        "http://127.0.0.1:5500"
-    ],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -77,7 +75,7 @@ app.add_exception_handler(Exception, generic_exception_handler)
 # Endopint para probar que el microservicio esta activo
 @app.get("/health")
 def health():
-    logging.info("Peticion de health check")
+    logger.info("Peticion de health check")
     return {"status": "ok"}
 
 # Permite incluir el router de incidencias y con ello sus endpoints

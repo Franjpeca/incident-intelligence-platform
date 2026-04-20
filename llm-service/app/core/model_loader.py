@@ -21,17 +21,17 @@ _inference_lock = threading.Lock()
 # Funcion para obtener el modelo, lo carga si no esta ya cargado
 def get_model():
     # Tomamos las variables gloables, y si no esta cargado el modelo y tokenizer, los cargamos
-    logging.info("Comenzando la carga del modelo")
+    logger.info("Comenzando la carga del modelo")
     global _tokenizer, _model, _inference_lock
 
     # Probamos a realizar la carga de las dos variables
     try:
         if _tokenizer is None:
-            logging.info("Tokenizer no cargado, cargandolo")
+            logger.info("Tokenizer no cargado, cargandolo")
             _tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
 
         if _model is None:
-            logging.info("Modelo no cargado, cargandolo")
+            logger.info("Modelo no cargado, cargandolo")
             _model = AutoModelForCausalLM.from_pretrained(
                 MODEL_ID,
                 device_map="auto",  # Indicamos que se cargue en GPU, si no se puede, se cargara en CPU
@@ -40,10 +40,10 @@ def get_model():
             )
     # Si no funciona, entonces lanzamos error de carga del modelo
     except Exception:
-        logging.error("Error al cargar el modelo")
+        logger.error("Error al cargar el modelo")
         raise ModelLoadError("Error al cargar el modelo")
 
-    logging.info("Modelo y tokenizer cargados con exito")
+    logger.info("Modelo y tokenizer cargados con exito")
     return _tokenizer, _model, _inference_lock
 
 
