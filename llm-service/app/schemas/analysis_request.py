@@ -1,5 +1,5 @@
 from typing import Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 # Por ejemplo, "only_summary", "all"
@@ -7,5 +7,5 @@ from pydantic import BaseModel
 # Es mejor que que el cliente mande el prompt entero o el
 # nombre del fichero de prompt, es mas desacoplado y escalable
 class AnalysisRequest(BaseModel):
-    text: str
+    text: str = Field(..., min_length=1)
     analysis_type: Optional[str] = None

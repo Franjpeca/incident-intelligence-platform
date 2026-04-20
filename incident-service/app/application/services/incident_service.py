@@ -44,8 +44,18 @@ def create_incident(data: IncidentCreateRequest, db: Session) -> Incident:
 # Obtiene todos los registros de la tabla de la bd
 def get_incidents(db: Session):
     try:
-        logger.info(f"Obteniendo todas las incidencias")
-        return db.query(Incident).all()
+        # Para no mostrar toda la base de datos, ya que puede generar problemas de memoria, mostramos los ultimos 100
+        # Se podria aplicar paginacion y scroll infinito en el front si se desea de ver todo, pero para el proposito de
+        # este proyecto poner un limite es suficiente. Lo importante es controlar que a futuro no colapse el servidor
+        MAX_SAFETY_LIMIT = 100 
+        logger.info(f"Obteniendo las últimas {MAX_SAFETY_LIMIT} incidencias")
+        
+        return (
+            db.query(Incident)
+            .order_by(Incident.created_at.desc()) 
+            .limit(MAX_SAFETY_LIMIT)
+            .all()
+        )
     except Exception as e:
         logger.exception(f"Error la intentar obtener todas las incidencias: {str(e)}")
         raise DatabaseOperationError("Error al obtener las incidencias")
