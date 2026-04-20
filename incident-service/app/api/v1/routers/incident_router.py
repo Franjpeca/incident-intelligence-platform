@@ -8,6 +8,7 @@ from app.schemas.incident_request import IncidentCreateRequest
 from app.schemas.incident_response import IncidentResponse
 from app.schemas.incident_status_request import StatusUpdateRequest
 from app.schemas.incident_update_request import IncidentUpdateRequest
+from app.schemas.analysis_result import IncidentAnalysisResponse
 
 from app.api.v1.controllers.incident_controller import (
     create_incident_controller,
@@ -25,7 +26,7 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1/incidents", tags=["incidents"])
 
 # No indicamos lo que devuelve ya que ya esta indicado en el decorador
-@router.post("", response_model=IncidentResponse)
+@router.post("", response_model=IncidentResponse, status_code=201)
 # Creacion de una incidencia, data viene del usuario y db no, por el depends
 def create_incident(data: IncidentCreateRequest, db: Session = Depends(get_db)):
     logger.info("Peticion para crear incidencia")
@@ -94,7 +95,7 @@ def update_incident(incident_id: int, data: IncidentUpdateRequest, db: Session =
 
 
 # Establecemos la ruta para generar el analisis usando LLM
-@router.post("/{incident_id}/analysis")
+@router.post("/{incident_id}/analysis", response_model=IncidentResponse, status_code=201)
 def analyze_incident(incident_id: int, db: Session = Depends(get_db)):
     logger.info("Peticion para generar analisis de incidencia id=%s", incident_id)
    
@@ -105,7 +106,7 @@ def analyze_incident(incident_id: int, db: Session = Depends(get_db)):
 
 
 # Endpoint para poder obtener el analisis de una incidencia dado el id
-@router.get("/{incident_id}/analysis")
+@router.get("/{incident_id}/analysis", response_model=IncidentAnalysisResponse)
 def get_incident_analysis(incident_id: int, db: Session = Depends(get_db)):
     logger.info("Peticion para obtener analisis de incidencia id=%s", incident_id)
     

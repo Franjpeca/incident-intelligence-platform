@@ -11,3 +11,5 @@ sentencepiece
 
 pytest
 httpx
+
+json-repair

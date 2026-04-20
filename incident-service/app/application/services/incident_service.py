@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from app.infrastructure.db.models.incident_model import Incident
 from app.schemas.incident_request import IncidentCreateRequest
 from app.schemas.incident_update_request import IncidentUpdateRequest
-from app.schemas.analysis_result import AnalysisResult
+from app.schemas.analysis_result import IncidentAnalysisResponse
 from app.domain.enums.incident_status import IncidentStatus
 from app.infrastructure.clients.llm_service_client import analyze_text_with_llm
 from app.application.services.incident_rules_service import analyze_text_with_rules
@@ -150,10 +150,10 @@ def get_incident_analysis(incident_id: int, db: Session) -> Dict[str, Any]:
 
     logger.info(f"Analisis encontrado para la incidencia: {incident_id}")
     return {
-        "analysis_summary": incident.analysis_summary,
+        "summary": incident.analysis_summary,
         "category": incident.category,
         "priority": incident.priority,
-        "analysis_confidence": incident.analysis_confidence,
+        "confidence": incident.analysis_confidence,
     }
 
 
@@ -169,8 +169,6 @@ def analyze_incident(incident_id: int, db: Session) -> Incident:
     logger.info(f"Analizando incidencia {incident_id} usando reglas")
     rules_result = analyze_text_with_rules(incident.title, incident.description)
 
-    final_analysis: AnalysisResult
-
     # Si el sistema de reglas lo indica, usamos el LLM
     if rules_result.use_llm:
         try:
@@ -181,14 +179,14 @@ def analyze_incident(incident_id: int, db: Session) -> Incident:
             analysis_dict = analyze_text_with_llm(text_to_analyze, rules_result.analysis_type)
             
             # La validación se realiza automáticamente al instanciar el esquema
-            final_analysis = AnalysisResult(**analysis_dict)
+            final_analysis = IncidentAnalysisResponse(**analysis_dict)
 
         except (LLMServiceUnavailableError, InvalidLLMResponseError, Exception) as e:
             logger.warning(f"Fallo en servicio LLM ({str(e)}). Aplicando fallback")
             final_analysis = _get_llm_fallback_values(rules_result)
     else:
         # Si no, pues simplemente guardamos el resultado dado por las reglas
-        final_analysis = AnalysisResult(
+        final_analysis = IncidentAnalysisResponse(
             summary=rules_result.summary,
             category=rules_result.category,
             priority=rules_result.priority,
@@ -212,17 +210,17 @@ def _prepare_llm_text(incident: Incident) -> str:
     # Establecemos el texto a analizar, en este caso el titulo y la descripcion de la incidencia
     return f"Title: {incident.title}\nDescription: {incident.description}"
 
-def _get_llm_fallback_values(rules_result) -> AnalysisResult:
+def _get_llm_fallback_values(rules_result) -> IncidentAnalysisResponse:
     # Fallback del LLM, se guarda como analis el resultado de las reglas
     # Ahora usamos el schema definido para la respuesta
-    return AnalysisResult(
+    return IncidentAnalysisResponse(
         summary="Fallback: Sin resumen",
         category="Fallback: Sin categoria",
         priority=rules_result.priority,
         confidence=0.5
     )
 
-def _apply_analysis_to_incident(incident: Incident, analysis_data: AnalysisResult):
+def _apply_analysis_to_incident(incident: Incident, analysis_data: IncidentAnalysisResponse):
     # Introducimos el resultado del analisis en la incidencia
     incident.analysis_summary = analysis_data.summary
     incident.category = analysis_data.category

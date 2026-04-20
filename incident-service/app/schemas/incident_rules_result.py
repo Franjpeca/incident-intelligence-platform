@@ -1,6 +1,6 @@
-from app.schemas.analysis_result import AnalysisResult
+from app.schemas.analysis_result import IncidentAnalysisResponse
 
-class IncidentRulesResult(AnalysisResult):
+class IncidentRulesResult(IncidentAnalysisResponse):
     use_llm: bool
     analysis_type: str | None = None
     # Necesario para que hayan parametros opcionales que decidira el modelo en tal caso
