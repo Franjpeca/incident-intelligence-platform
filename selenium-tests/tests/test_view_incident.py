@@ -32,7 +32,8 @@ def test_view_incident_by_id(driver, base_url, fixture_create_incident):
 
     assert "incidencia encontrada" in feedback
     assert f'"id": {incident_id}' in response
-    assert '"title": "test selenium"' in response
+    # Debemos comprobarlo con lo devuelto en la incidencia
+    assert f'"title": "{fixture_create_incident["title"].lower()}"' in response
 
 
 
@@ -65,4 +66,5 @@ def test_view_all_incidents(driver, base_url, fixture_create_incident):
 
     assert created_incident["id"] is not None
     assert "incidencias cargadas" in feedback
-    assert "test selenium" in incidents_list
+    # Debemos comprobarlo con lo devuelto en la incidencia
+    assert fixture_create_incident["title"].lower() in incidents_list

@@ -56,7 +56,7 @@ def test_update_incident_status(driver, base_url, fixture_create_incident):
     update_page.goto()
 
     # Actualizamos solo el estado
-    update_page.update_status_only(incident_id, "open")
+    update_page.update_status_only(incident_id, "closed")
 
     try:
         # Esperamos el mensaje de exito
@@ -75,7 +75,7 @@ def test_update_incident_status(driver, base_url, fixture_create_incident):
 
     assert "estado actualizado correctamente" in feedback
     assert f'"id": {incident_id}' in response
-    assert '"status": "open"' in response
+    assert '"status": "closed"' in response
 
 
 def test_delete_incident(driver, base_url, fixture_create_incident):

@@ -53,7 +53,7 @@ def assert_incident_not_exists(view_page, incident_id):
 # Funcion test que prueba la actualizacion general de una incidencia
 def test_update_incident(page, base_url, create_incident_id):
     # Creamos la incidencia
-    incident_id = create_incident_id
+    incident_id = create_incident_id["id"]
     # Creamos la pagina de actualizar/borrar incidencias
     update_page = UpdateDeleteIncidentPage(page, base_url)
     # Navegamos a la pagina
@@ -88,7 +88,7 @@ def test_update_incident(page, base_url, create_incident_id):
 # Funcion test que prueba la actualizacion unicamente del estado
 def test_update_incident_status(page, base_url, create_incident_id):
     # Creamos la incidencia
-    incident_id = create_incident_id
+    incident_id = create_incident_id["id"]
     # Creamos la pagina de actualizar/borrar incidencias
     update_page = UpdateDeleteIncidentPage(page, base_url)
     # Navegamos a la pagina
@@ -116,7 +116,7 @@ def test_update_incident_status(page, base_url, create_incident_id):
 # Funcion test que prueba el borrado de una incidencia
 def test_delete_incident(page, base_url, create_incident_id):
     # Creamos la incidencia
-    incident_id = create_incident_id
+    incident_id = create_incident_id["id"]
     # Creamos la pagina de actualizar/borrar incidencias
     update_page = UpdateDeleteIncidentPage(page, base_url)
     # Navegamos a la pagina

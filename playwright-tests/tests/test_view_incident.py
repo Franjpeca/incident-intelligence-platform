@@ -17,7 +17,8 @@ from playwright.sync_api import expect
 # create_incident_id para poder usar la funcion auxiliar de crear incidencia
 def test_view_incident_by_id(page, base_url, create_incident_id):
     # Creamos la incidencia
-    incident_id = create_incident_id
+    incident = create_incident_id
+    incident_id = incident["id"]
     # Creamos la pagina de ver incidencias
     view_page = ViewIncidentPage(page, base_url)
     # Navegamos a la pagina
@@ -36,13 +37,14 @@ def test_view_incident_by_id(page, base_url, create_incident_id):
     # Si todo va bien, hacemos los asserts finales de los datos
     search_response = view_page.get_search_response_locator().inner_text().lower()
     assert f'"id": {incident_id}' in search_response
-    assert '"title": "incident for search"' in search_response
+    assert f'"title": "{incident["title"].lower()}"' in search_response
 
 # Funcion test que prueba a mostrar todas las incidencias
 # create_incident_id para poder usar la funcion auxiliar de crear incidencia
 def test_view_all_incidents(page, base_url, create_incident_id):
     # Creamos la incidencia
-    incident_id = create_incident_id
+    incident = create_incident_id
+    incident_id = incident["id"]
     # Creamos la pagina de ver incidencias
     view_page = ViewIncidentPage(page, base_url)
     # Navegamos a la pagina
@@ -57,4 +59,4 @@ def test_view_all_incidents(page, base_url, create_incident_id):
 
     assert incident_id is not None
     assert "incidencias cargadas" in feedback or "correctamente" in feedback
-    assert "incident for search" in incidents_text
+    assert incident["title"].lower() in incidents_text

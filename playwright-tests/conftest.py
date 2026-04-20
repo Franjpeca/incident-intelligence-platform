@@ -24,7 +24,7 @@ def create_incident_id(page, base_url):
         response.wait_for(state="attached") 
         
         incident_data = json.loads(response.inner_text())
-        return incident_data["id"]
+        return incident_data
         
     except Exception as e:
         #Si no se ha recibido o si no ha devuelto un id valido

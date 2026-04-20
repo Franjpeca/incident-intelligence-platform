@@ -10,7 +10,7 @@ from pages.incident_analysis_page import IncidentAnalysisPage
 # Funcion test que prueba lanzar el analisis de una incidencia
 def test_analyze_incident(page, base_url, create_incident_id):
     # Creamos la incidencia
-    incident_id = create_incident_id
+    incident_id = create_incident_id["id"]
     # Creamos la pagina de analisis
     analysis_page = IncidentAnalysisPage(page, base_url)
     # Navegamos a la pagina
@@ -43,7 +43,7 @@ def test_analyze_incident(page, base_url, create_incident_id):
 # Funcion test que prueba obtener el analisis de una incidencia
 def test_get_incident_analysis(page, base_url, create_incident_id):
     # Creamos la incidencia
-    incident_id = create_incident_id
+    incident_id = create_incident_id["id"]
     # Creamos la pagina de analisis
     analysis_page = IncidentAnalysisPage(page, base_url)
     # Navegamos a la pagina
