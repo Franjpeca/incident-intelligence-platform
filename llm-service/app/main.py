@@ -9,7 +9,6 @@ from fastapi.middleware.cors import CORSMiddleware
 import logging
 from app.core.logging_config import setup_logging
 
-# Importacion de los tipos de errores (excepciones personalizadas)
 from app.core.exceptions import (
     ModelNotLoadedError,
     ModelLoadError,
@@ -19,7 +18,6 @@ from app.core.exceptions import (
     PromptFormattingError,
 )
 
-# Importacion de los manejadores de errores propios (funciones)
 from app.core.error_handlers import (
     model_not_loaded_handler,
     model_load_handler,
@@ -57,7 +55,7 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# Permitimos conexiones, en este caso, desde nuestra web
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,
@@ -66,7 +64,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Registro de manejadores de errores personalizados
 app.add_exception_handler(ModelNotLoadedError, model_not_loaded_handler)
 app.add_exception_handler(ModelLoadError, model_load_handler)
 app.add_exception_handler(PromptNotFoundError, prompt_not_found_handler)

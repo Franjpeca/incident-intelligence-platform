@@ -7,7 +7,6 @@ logger = logging.getLogger(__name__)
 
 def get_by_id(db: Session, incident_id: int):
     # En este caso, devuelve el primero que encuentra
-    # SELECT * FROM incident WHERE id = incident_id LIMIT 1
     return db.query(Incident).filter(Incident.id == incident_id).first()
 
 def list_incidents(db: Session, limit: int = 100):
@@ -26,7 +25,6 @@ def save(db: Session, incident: Incident):
     
 
 def delete(db: Session, incident: Incident):
-    # DELETE FROM incident WHERE id = incident_id
     try:
         db.delete(incident)
         db.commit()

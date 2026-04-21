@@ -34,8 +34,7 @@ class Incident(Base):
         onupdate=func.now(), 
         nullable=False
     )
-    # Metodo de la propia incidencia
-    # Es logica de negocio
+
     # Permite saber si la incidencia puede ser borrada o no
     def can_be_deleted(self) -> bool:
         return self.status == IncidentStatus.CLOSED.value

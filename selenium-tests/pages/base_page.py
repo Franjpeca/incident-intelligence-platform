@@ -24,9 +24,6 @@ class BasePage:
     # By contiene el tipo de elemento a encontrar
     # Value el valor de ese elemento a encontrar
     def find(self, by, value):
-        # wait.until esperara de determinada forma
-        # es EC (expected conditions) quien indica de cual forma
-        # Como por ejemplo que el elemento exista y ademas que sea visible, etc
         return self.wait.until(EC.presence_of_element_located((by, value)))
 
     # Devuelve todos los elementos del tipo indicado con by y con la etiqueta indicada en value

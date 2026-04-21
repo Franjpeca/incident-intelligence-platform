@@ -2,7 +2,7 @@ from .base_page import BasePage
 
 
 class UpdateDeleteIncidentPage(BasePage):
-    # Navegador hacia la pagina
+
     def goto(self):
         super().goto("/pages/update-delete-incident.html")
 

@@ -13,7 +13,7 @@ def test_create_incident(page, base_url):
         "Cuerpo de dicha incidencia"
     )
 
-    # Buscamos evitar condiciones de carrera (se ejecuta antes los asertos que la respuesta)
+    # Buscamos evitar condiciones de carrera
     feedback_locator = create_page.get_feedback_locator()
 
     expect(feedback_locator).to_contain_text("Incidencia creada correctamente", ignore_case=True)

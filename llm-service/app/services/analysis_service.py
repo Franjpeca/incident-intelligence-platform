@@ -39,18 +39,16 @@ def _generate_response(model, inputs) -> list:
         raise ModelInferenceError("Error durante la inferencia del modelo") from exc
 
 
-# Funcion principal del servicios de analisis
-# Recibe el texto del cliente a analizar
-# Devuelve un objeto con el resumen, categoria, prioridad y confianza
+# Funcion principal que trata y analiza un texto usando un LLM
 def analyze_text(text: str, analysis_type: str = None) -> AnalysisResponse:
     logger.info("Iniciando analisis de texto usando LLM")
-    # Cargamos el modelo y el tokenizer
+
     tokenizer, model, lock = get_model()
 
     input_text = get_input_text(tokenizer, analysis_type, text)
-    # Transformamos este texto a tokens que entendera el modelo y los movemos a memoria
+
     inputs = _tokenize_input(input_text, tokenizer, model.device)
-    # Generamos la respuesta del modelo
+
     with lock:
         logger.info("Entrando al lock de inferencia. Iniciando uso del modelo...")
         outputs = _generate_response(model, inputs)

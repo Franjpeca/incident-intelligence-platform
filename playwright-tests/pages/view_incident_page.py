@@ -2,7 +2,7 @@ from .base_page import BasePage
 
 
 class ViewIncidentPage(BasePage):
-    # Accedemos a la web de ver incidencias
+
     def goto(self):
         super().goto("/pages/view-incident.html")
 

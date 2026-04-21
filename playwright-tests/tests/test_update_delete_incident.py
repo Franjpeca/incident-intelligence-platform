@@ -55,7 +55,6 @@ def test_update_incident(page, base_url, create_incident_id):
 
     update_page.goto()
 
-    # Actualizamos campos de la incidencia
     update_page.update_incident(
         incident_id,
         title="Titulo actualizado",
@@ -99,7 +98,6 @@ def test_update_incident_status(page, base_url, create_incident_id):
         error_status = status_feedback_locator.inner_text()
         pytest.fail(f"Error al actualizar el estado de la incidencia {incident_id}: {error_status}")
 
-    # Si todo va bien, hacemos los asserts finales de los datos
     status_response = update_page.get_status_response_locator().inner_text().lower()
     assert f'"id": {incident_id}' in status_response
     assert '"status": "closed"' in status_response
@@ -127,9 +125,8 @@ def test_delete_incident(page, base_url, create_incident_id):
         error_delete = delete_feedback_locator.inner_text()
         pytest.fail(f"Error al borrar la incidencia {incident_id}: {error_delete}")
 
-    # Creamos la pagina de ver incidencias
     view_page = ViewIncidentPage(page, base_url)
-    # Navegamos a la pagina
+ 
     view_page.goto()
 
     # Comprobamos usando la funcion auxiliar que ya no exista

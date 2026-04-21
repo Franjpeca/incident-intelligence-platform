@@ -1,6 +1,6 @@
 # Librerias de carga del modelo y tokenizer de Hugging Face
 from transformers import AutoModelForCausalLM, AutoTokenizer
- # Nombre del modelo a cargar
+# Nombre del modelo a cargar
 from app.core.config import MODEL_ID
 
 from app.core.exceptions import ModelLoadError
@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 _tokenizer = None
 _model = None
-# Fuera para evitar problemas de condiciones de carrera
+# Lock global para evitar problemas de condiciones de carrera
 _inference_lock = threading.Lock()
 
 # Funcion para obtener el modelo, lo carga si no esta ya cargado
@@ -32,8 +32,8 @@ def get_model():
             _model = AutoModelForCausalLM.from_pretrained(
                 MODEL_ID,
                 device_map="auto",  # Indicamos que se cargue en GPU, si no se puede, se cargara en CPU
-                torch_dtype="auto",# Ajusta automaticamente a float16 si hay GPU, mas eficiente
-                low_cpu_mem_usage=True # Mejora la carga del modelo
+                torch_dtype="auto", # Ajusta automaticamente a float16 si hay GPU, mas eficiente
+                low_cpu_mem_usage=True  # Mejora la carga del modelo
             )
 
     except Exception:
@@ -44,6 +44,6 @@ def get_model():
     return _tokenizer, _model, _inference_lock
 
 
- # Funcion para verificar si el modelo y tokenizer estan cargados
+# Funcion para verificar si el modelo y tokenizer estan cargados
 def is_model_loaded():
     return _tokenizer is not None and _model is not None

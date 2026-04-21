@@ -56,10 +56,10 @@ def parse_and_validate_response(outputs, inputs, tokenizer) -> AnalysisResponse:
     except Exception as exc:
         logger.error("Error al pasar de token a texto legible")
         raise ModelInferenceError("Error al decodificar la salida del modelo") from exc
-    # Extraemos el JSON de la respuesta del modelo y lo parseamos a un diccionario
+
     logger.info("Extrayendo el JSON de la respuesta del modelo")
     parsed = extract_json(output_text)
-    # Intentamos crear el objeto AnalysisResponse directamente
+
     try:
         logger.info("Devolviendo la respuesta del modelo")
         return AnalysisResponse(**parsed) 
