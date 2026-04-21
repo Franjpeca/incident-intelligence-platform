@@ -193,7 +193,7 @@ Durante el desarrollo del proyecto se han tomado varias decisiones para intentar
 
 - **Separación de responsabilidades**: El sistema está dividido en distintos servicios y capas para que cada parte tenga una función concreta, facilitando la comprensión y el mantenimiento del código.
 
-- **Desacoplamiento de componentes**: La gestión de incidencias y el análisis de texto se han separado en servicios diferentes, de forma que puedan evolucionar de manera independiente. Este mismo enfoque de desacoplamiento también se aplica a los contenedores dedicados al testing E2E.
+- **Desacoplamiento de componentes**: La gestión de incidencias y el análisis de texto se han separado en servicios diferentes, de forma que puedan evolucionar de manera independiente. Este mismo enfoque también se aplica a los contenedores dedicados al testing E2E.
 
 - **Estrategias de procesamiento**: En función del contenido de la incidencia, el sistema decide si aplicar reglas simples o utilizar el servicio de análisis, evitando usar el modelo cuando no es necesario.
 
