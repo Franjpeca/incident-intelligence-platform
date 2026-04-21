@@ -78,7 +78,7 @@ def delete_incident(incident_id: int, db: Session = Depends(get_db)):
     
     delete_incident_controller(incident_id, db)
 
-    logger.info("Respondiendo al cliente sobre la eliminacinon de id=%s", incident_id)
+    logger.info("Respondiendo al cliente sobre la eliminacion de id=%s", incident_id)
     return {"message": "Incidencia eliminada correctamente"}
 
 
@@ -112,5 +112,5 @@ def get_incident_analysis(incident_id: int, db: Session = Depends(get_db)):
     
     analysis = get_incident_analysis_controller(incident_id, db)
 
-    logger.info("Respondiendo al cliente con el analisis de la incidenciad=%s", incident_id)
+    logger.info("Respondiendo al cliente con el analisis de la incidencia=%s", incident_id)
     return analysis

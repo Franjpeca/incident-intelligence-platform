@@ -26,10 +26,9 @@ def _find_json_by_braces(text: str) -> str | None:
 # Comprueba si sera un JSON valido, si no lo es, lanza una excepcion
 # La idea es encontrar que esta entre corchetes y luego parsearlo a un diccionario para asegurar la forma de la salida
 def extract_json(output_text: str) -> dict:
-    logger.info("Iniciando la extracion del JSON")
+    logger.info("Iniciando la extraccion del JSON")
 
-    # Intentamos obtener el texto generado en markdawn y si no en llaves
-    # El or primero realiza lo de la izquierda si no devuelve nada realiza lo de la derecha
+    # Intentamos obtener el texto generado en markdown y si no en llaves
     # La idea es tener cuidado de si la respuesta viene en markdown o no
     json_text = _find_json_in_markdown(output_text) or _find_json_by_braces(output_text)
 

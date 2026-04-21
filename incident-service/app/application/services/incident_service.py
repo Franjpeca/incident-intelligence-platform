@@ -178,7 +178,7 @@ def analyze_incident(incident_id: int, db: Session) -> Incident:
             logger.info(f"Analizando incidencia {incident_id} usando LLM")
             analysis_dict = analyze_text_with_llm(text_to_analyze, rules_result.analysis_type)
             
-            # La validación se realiza automáticamente al instanciar el esquema
+            # La validacion se realiza automaticamente al instanciar el esquema
             final_analysis = IncidentAnalysisResponse(**analysis_dict)
 
         except (LLMServiceUnavailableError, InvalidLLMResponseError, Exception) as e:

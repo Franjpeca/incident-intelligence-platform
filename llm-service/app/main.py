@@ -9,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import logging
 from app.core.logging_config import setup_logging
 
-# Importancion de los tipos de errores (excepciones personalizadas)
+# Importacion de los tipos de errores (excepciones personalizadas)
 from app.core.exceptions import (
     ModelNotLoadedError,
     ModelLoadError,
@@ -19,7 +19,7 @@ from app.core.exceptions import (
     PromptFormattingError,
 )
 
-# Importancion de los manejadores de errores propios (funciones)
+# Importacion de los manejadores de errores propios (funciones)
 from app.core.error_handlers import (
     model_not_loaded_handler,
     model_load_handler,

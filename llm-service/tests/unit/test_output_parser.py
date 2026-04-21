@@ -3,7 +3,7 @@ import pytest
 from app.core.exceptions import InvalidModelOutputError
 from app.core.output_parser import extract_json
 
-# Test para comprobar la correcta extracion de un JSON
+# Test para comprobar la correcta extraccion de un JSON
 def test_extract_json_returns_dict_when_json_is_valid():
     # Texto a comprobar
     text = 'Texto previo {"summary":"ok","category":"software","priority":"high","confidence":90} texto posterior'

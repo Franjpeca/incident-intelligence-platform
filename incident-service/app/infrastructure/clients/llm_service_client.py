@@ -33,7 +33,7 @@ def analyze_text_with_llm(text: str, analysis_type: str):
     except requests.exceptions.RequestException:
         raise LLMServiceUnavailableError("Error de solicitud al servicio de LLM")
 
-    # Comprobamos si el error devuelto es 500, es decir, un error de lservidor
+    # Comprobamos si el error devuelto es 500, es decir, un error del servidor
     if response.status_code >= 500:
         raise LLMServiceUnavailableError("Error de servidor en el servicio LLM")
 

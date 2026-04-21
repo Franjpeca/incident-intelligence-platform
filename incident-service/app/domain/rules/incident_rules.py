@@ -2,10 +2,10 @@ import re
 import json
 from pathlib import Path
 
-# Al ser logica de dominio, lo lo indicamos el env, no es relacionado con la propia ejecucion
+# Al ser logica de dominio, lo indicamos el env, no es relacionado con la propia ejecucion
 KEYWORDS_PATH = Path(__file__).parent / "keywords.json"
 
-# Intenamos leer el fichero JSON, con control en caso de que haya fallo
+# Intentamos leer el fichero JSON, con control en caso de que haya fallo
 def _load_keywords():
     try:
         with open(KEYWORDS_PATH, "r", encoding="utf-8") as f:

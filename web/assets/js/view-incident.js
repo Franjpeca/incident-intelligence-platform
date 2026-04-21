@@ -27,7 +27,7 @@ function createCard(incident) {
   card.style.marginTop = "10px";
 
   card.innerHTML = `
-    <h3>${incident.title || "Sin título"}</h3>
+    <h3>${incident.title || "Sin titulo"}</h3>
     <p><strong>ID:</strong> ${incident.id}</p>
     <p><strong>Descripcion:</strong> ${incident.description}</p>
     <p><strong>Estado:</strong> ${incident.status || "N/A"}</p>

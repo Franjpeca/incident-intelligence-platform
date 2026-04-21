@@ -44,7 +44,7 @@ def get_prompt_name_for_analysis_type(analysis_type: str | None) -> str:
 # Esto lo realiza la funcion .format
 def build_prompt(analysis_type: str | None, **kwargs: str) -> str:
     logger.info("Construyendo el prompt")
-    # Buscamos el prompt usando el tipo de analis
+    # Buscamos el prompt usando el tipo de analisis
     prompt_name = get_prompt_name_for_analysis_type(analysis_type)
     # Una vez encontrado, lo cargamos
     template = load_prompt(prompt_name)

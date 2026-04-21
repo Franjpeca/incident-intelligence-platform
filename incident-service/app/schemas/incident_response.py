@@ -1,4 +1,4 @@
-# Importancion para el estandar actual de pydantic
+# Importacion para el estandar actual de pydantic
 from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 from pydantic import BaseModel

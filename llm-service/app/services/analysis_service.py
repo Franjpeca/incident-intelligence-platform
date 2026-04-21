@@ -19,7 +19,7 @@ def _tokenize_input(input_text: str, tokenizer, device) -> dict:
         logger.info("Tokenizando el input del modelo")
         return tokenizer(input_text, return_tensors="pt").to(device)
     except Exception as exc:
-        logger.error(f"Error en fase de tokenización: {exc}")
+        logger.error(f"Error en fase de tokenizacion: {exc}")
         raise ModelInferenceError("Error al preparar los tensores para el modelo") from exc
 
 
@@ -39,7 +39,7 @@ def _generate_response(model, inputs) -> list:
             do_sample=DO_SAMPLE
         )
     except Exception as exc:
-        logger.error(f"Error en la generación del modelo: {exc}")
+        logger.error(f"Error en la generacion del modelo: {exc}")
         raise ModelInferenceError("Error durante la inferencia del modelo") from exc
 
 
