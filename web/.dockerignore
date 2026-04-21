@@ -1,0 +1,30 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+.selenium-venv/
+.playwright-venv/
+
+# Environment
+.env
+.env.*
+
+# Testing
+.pytest_cache/
+htmlcov/
+.coverage
+.tox/
+coverage.xml
+
+# IDE
+.vscode/
+.idea/

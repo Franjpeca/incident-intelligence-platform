@@ -1,15 +1,16 @@
-incident-service/.venv/
-llm-service/.venv/
+# Entornos virtuales
+.venv/
 venv/
 env/
 ENV/
-incident-service/.incident-venv
-llm-service/llm-venv
-llm-service/.llm-venv
-playwright-tests/.playwright-venv
-selenium-tests/.selenium-venv
+incident-venv
+.incident-venv
+llm-venv
+.llm-venv
+.playwright-venv
+.selenium-venv
 
-
+# Ficheros de cache de python y test
 __pycache__/
 *.py[cod]
 *$py.class
@@ -18,32 +19,29 @@ __pycache__/
 htmlcov/
 .mypy_cache/
 
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+# env
 **/.env
 
+# Docker y contenedor
 .docker/
 postgres_data/
 
+# Logs
+logs/
+*.log
+
+# SQLite
+*.db
+*.sqlite3
+
+# Visual studio y ficheros dle sistema
 .vscode/
 .idea/
 *.swp
 *.swo
 .DS_Store
 
-logs/
-*.log
-incident-service/app/core/logs/
-llm-service/app/core/logs/
-
-*.db
-*.sqlite3
-
-docs/* . r a r 
- 
+# Archivos comprimidos
 *.rar
 *.zip
 *.7z
