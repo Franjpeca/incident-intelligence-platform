@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from fastapi.testclient import TestClient
 from app.infrastructure.db.models.incident_model import Incident
-
+from fastapi import HTTPException
 
 
 from app.main import app
@@ -46,7 +46,7 @@ def test_create_incident_endpoint(monkeypatch):
     )
 
     # Elementos que se espera que se obtengan de la funcion simulada, si no, el test falla
-    assert response.status_code == 200
+    assert response.status_code == 201
     body = response.json()
     assert body["title"] == "Servidor caido"
     assert body["description"] == "La aplicacion no responde"
@@ -57,7 +57,7 @@ def test_create_incident_endpoint(monkeypatch):
 def test_get_incident_by_id_returns_404(monkeypatch):
     # Funcion mock para simular una incidencia no encontrada
     def mock_get_incident_by_id_controller(incident_id, db):
-        return None
+        raise HTTPException(status_code=404, detail="La incidencia con ese id no existe")
 
     # Atributos necesarios para llamar a la funcion mock
     monkeypatch.setattr(
@@ -137,7 +137,7 @@ def test_analyze_incident_endpoint(monkeypatch):
     response = client.post("/api/v1/incidents/1/analysis")
 
     # Comprobamos si se devuelve correctamente los datos
-    assert response.status_code == 200
+    assert response.status_code == 201
     body = response.json()
     assert body["id"] == 1
     assert body["priority"] == "high"
