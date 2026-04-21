@@ -51,7 +51,7 @@ Ambos permiten validar el comportamiento completo del sistema dentro del entorno
 
 ## 3. Componentes del sistema
 
-La plataforma está compuesta por varios servicios independientes, cada uno con una responsabilidad concreta dentro del sistema.
+La plataforma está compuesta por varios microservicios independientes, cada uno con una responsabilidad concreta dentro del sistema.
 
 - **incident-service**: servicio principal encargado de gestionar las incidencias, incluyendo su creación, consulta, actualización y almacenamiento. También coordina el proceso de análisis cuando es necesario.
 
@@ -65,6 +65,7 @@ La plataforma está compuesta por varios servicios independientes, cada uno con 
 
 - **selenium-tests**: contenedor adicional de pruebas de extremo a extremo que refuerza la validación del frontend y la estabilidad de los flujos principales.
 
+Todo lo realizado por los microservicios queda registrado y persistido mediante logs con niveles.
 
 ## 4. Flujo del sistema
 
