@@ -1,5 +1,14 @@
 # Incident Intelligence Platform
 
+![Python](https://img.shields.io/badge/Python-3.11-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-green)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue)
+![Pytest](https://img.shields.io/badge/Pytest-testing-blue)
+![Playwright](https://img.shields.io/badge/Playwright-E2E-green)
+![Selenium](https://img.shields.io/badge/Selenium-E2E-green)
+![HuggingFace](https://img.shields.io/badge/HuggingFace-Transformers-yellow)
+![Docker](https://img.shields.io/badge/Docker-containerized-blue)
+
 ## 1. Descripción del proyecto
 
 Este proyecto consiste en una plataforma orientada a la **gestión de incidencias y al análisis automático de su contenido**. El sistema está diseñado con una arquitectura de microservicios para separar claramente la lógica de negocio principal del procesamiento de texto realizado por el servicio de análisis.
