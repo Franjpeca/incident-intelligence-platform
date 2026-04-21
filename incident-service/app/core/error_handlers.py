@@ -1,6 +1,6 @@
 from fastapi import Request
 from fastapi.responses import JSONResponse
-# Tipos de errores registrados
+
 from app.core.exceptions import (
     IncidentNotFoundError,
     AnalysisNotFoundError,

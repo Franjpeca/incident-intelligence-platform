@@ -59,7 +59,8 @@ La plataforma está compuesta por varios servicios independientes, cada uno con 
 
 ## 4. Flujo del sistema
 
-El sistema sigue un flujo de procesamiento diseñado para gestionar las incidencias de forma eficiente y garantizar la consistencia de la información en cada etapa.
+Cuando una incidencia se registra y se solicita su análisis, el sistema sigue un flujo de procesamiento orientado a mantener la consistencia de los datos y decidir qué tipo de análisis aplicar en cada caso.
+
 
 1. **Ingesta y validación**: el usuario registra una incidencia desde el frontend o directamente mediante la API. El `incident-service` valida el formato de los datos y realiza la persistencia inicial en la base de datos.
 

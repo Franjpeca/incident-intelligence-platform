@@ -4,20 +4,18 @@ class AppError(Exception):
         self.message = message
         super().__init__(message)
 
-# No hace falta cuerpo en las clases, solamente sirven para identificar el tipo de error y 
-# manejarlo de forma adecuada en los controladores
 
 # Incidencia no encontrado
 class IncidentNotFoundError(AppError):
     pass
 
+# Errores de los campos en los datos
 class FieldError(AppError):
     pass
 
+# Error en la regla
 class BusinessRuleError(AppError):
     pass
-
-
 
 # Analisis no existente
 class AnalysisNotFoundError(AppError):
