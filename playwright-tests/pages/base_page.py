@@ -1,7 +1,6 @@
 # Clase padre, el resto de paginas toman informacion de esta
 # En vez de en cada pagina indicar cosas como url etc, se hace en esta clase y se hereda
 class BasePage:
-    # Self: este mismo objeto
     # page: pestaña del navegador 
     # base_url: para indicar el servidor que estamos ejecutando las pruebas
     def __init__(self, page, base_url):

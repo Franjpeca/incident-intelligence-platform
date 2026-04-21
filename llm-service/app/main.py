@@ -40,7 +40,7 @@ logger = logging.getLogger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info("Iniciando microservicio LLM...")
-    # En base a una variable configurable, se establece cuando cargar el modelo
+
     if LOAD_MODEL_ON_STARTUP:
         logger.info("Se procede a realizar la carga del modelo ...")
         get_model()
@@ -85,5 +85,5 @@ def health():
 
     raise HTTPException(status_code=503, detail="Model not loaded yet")
 
-# Registro de routers de la API (endpoints)
+
 app.include_router(analysis_router)

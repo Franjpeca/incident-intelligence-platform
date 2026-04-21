@@ -5,12 +5,12 @@ from pages.update_delete_incident_page import UpdateDeleteIncidentPage
 
 # Funcion test que prueba la actualizacion general de una incidencia
 def test_update_incident(driver, base_url, fixture_create_incident):
-    # Obtenemos el id de la incidencia creada
+
     incident_id = fixture_create_incident["id"]
 
-    # Creamos la pagina de actualizar o borrar incidencias
+
     update_page = UpdateDeleteIncidentPage(driver, base_url)
-    # Navegamos a la pagina
+
     update_page.goto()
 
     # Actualizamos la incidencia
@@ -22,7 +22,6 @@ def test_update_incident(driver, base_url, fixture_create_incident):
     )
 
     try:
-        # Esperamos el mensaje de exito
         update_page.wait_for_update_success_feedback()
     except Exception:
         error_visible = update_page.get_update_feedback_text()
@@ -32,7 +31,6 @@ def test_update_incident(driver, base_url, fixture_create_incident):
             f"Mensaje devuelto por la web: '{error_visible}'"
         )
 
-    # Validaciones finales
     feedback = update_page.get_update_feedback_text().lower()
     response = update_page.get_update_response_text().lower()
 
@@ -47,19 +45,16 @@ def test_update_incident(driver, base_url, fixture_create_incident):
 
 
 def test_update_incident_status(driver, base_url, fixture_create_incident):
-    # Obtenemos el id de la incidencia creada
+
     incident_id = fixture_create_incident["id"]
 
-    # Creamos la pagina de actualizar o borrar incidencias
     update_page = UpdateDeleteIncidentPage(driver, base_url)
-    # Navegamos a la pagina
+
     update_page.goto()
 
-    # Actualizamos solo el estado
     update_page.update_status_only(incident_id, "closed")
 
     try:
-        # Esperamos el mensaje de exito
         update_page.wait_for_status_success_feedback()
     except Exception:
         error_visible = update_page.get_status_feedback_text()
@@ -69,7 +64,6 @@ def test_update_incident_status(driver, base_url, fixture_create_incident):
             f"Mensaje devuelto por la web: '{error_visible}'"
         )
 
-    # Validaciones finales
     feedback = update_page.get_status_feedback_text().lower()
     response = update_page.get_status_response_text().lower()
 
@@ -79,23 +73,19 @@ def test_update_incident_status(driver, base_url, fixture_create_incident):
 
 
 def test_delete_incident(driver, base_url, fixture_create_incident):
-    # Obtenemos el id de la incidencia creada
+
     incident_id = fixture_create_incident["id"]
 
-    # Creamos la pagina de actualizar o borrar incidencias
     update_page = UpdateDeleteIncidentPage(driver, base_url)
-    # Navegamos a la pagina
+
     update_page.goto()
 
-    # Actualizamos la incidencia a closed
     update_page.update_status_only(incident_id, "closed")
-
 
     # Borramos la incidencia
     update_page.delete_incident(incident_id)
 
     try:
-        # Esperamos el mensaje de exito
         update_page.wait_for_delete_success_feedback()
     except Exception:
         error_visible = update_page.get_delete_feedback_text()
@@ -105,10 +95,8 @@ def test_delete_incident(driver, base_url, fixture_create_incident):
             f"Mensaje devuelto por la web: '{error_visible}'"
         )
 
-    # Validaciones finales
     feedback = update_page.get_delete_feedback_text().lower()
 
     assert "incidencia borrada correctamente" in feedback
 
-    # Comprobamos que la incidencia ya no existe
     assert_incident_not_exists(driver, base_url, incident_id)

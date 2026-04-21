@@ -3,17 +3,15 @@ from app.core.model_loader import get_model
 from app.core.output_parser import parse_and_validate_response
 from app.core.prompt_manager import get_input_text
 from app.schemas.analysis_response import AnalysisResponse
-# Importaciones de excepciones propias
-from app.core.exceptions import ModelInferenceError
 
-import threading
+from app.core.exceptions import ModelInferenceError
 
 import logging
 
 logger = logging.getLogger(__name__)
 
 
-# Funcion "privada" auxiliar, incorpora el control de errores para dejar limpia la funcion que la llama
+# Funcion privada auxiliar para tokenizar la entrada
 def _tokenize_input(input_text: str, tokenizer, device) -> dict:
     try:
         logger.info("Tokenizando el input del modelo")
@@ -23,14 +21,12 @@ def _tokenize_input(input_text: str, tokenizer, device) -> dict:
         raise ModelInferenceError("Error al preparar los tensores para el modelo") from exc
 
 
-# Funcion "privada" auxiliar para dejar mas limpio el servicio
-# Realiza la llamada al modelo
+# Funcion privada auxiliar que realiza la llamada al modelo
 def _generate_response(model, inputs) -> list:
 
     try:
         logger.info("Iniciando inferencia en el modelo")
-        # Aqui se introducen al modelo la entrada que ya ha sido cargada y se pide generar una respuesta
-        # Se le indican parametros del mismo, como la temperatura
+        # Llamada al modelo 
         return model.generate(
             **inputs,
             max_new_tokens=MAX_NEW_TOKENS,
@@ -49,12 +45,10 @@ def _generate_response(model, inputs) -> list:
 def analyze_text(text: str, analysis_type: str = None) -> AnalysisResponse:
     logger.info("Iniciando analisis de texto usando LLM")
     # Cargamos el modelo y el tokenizer
-    # El modelo se carga una sola vez y se reutiliza en cada llamada a la funcion
     tokenizer, model, lock = get_model()
 
     input_text = get_input_text(tokenizer, analysis_type, text)
     # Transformamos este texto a tokens que entendera el modelo y los movemos a memoria
-    # Es cargar la entrada
     inputs = _tokenize_input(input_text, tokenizer, model.device)
     # Generamos la respuesta del modelo
     with lock:

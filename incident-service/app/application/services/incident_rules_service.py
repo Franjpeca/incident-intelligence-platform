@@ -8,11 +8,11 @@ logger = logging.getLogger("incident-service")
 
 # Funcion que analiza el texto de una incidencia mediante reglas clasicas
 def analyze_text_with_rules(title: str, description: str) -> IncidentRulesResult:
-    # Tratamiento del texto para poder encontrarb ien las palabras clave
+    # Tratamiento del texto para poder encontrar bien las palabras clave
     logger.info(f"Inicio del analisis de la incidencia: {title}")
     text = f"{title} {description}".lower()
 
-    # Caso donde no encontramos las palabras clave pero si encontramos palabras tecnias
+    # Caso donde no encontramos las palabras clave pero si encontramos palabras tecnicas
     # Aqui tenemos incidencias complejas, por lo que mejor un analisis completo
     if contains_critical_terms(text):
         logger.info(f"Generando analisis de la incidencia usando unicamente reglas: {title}")

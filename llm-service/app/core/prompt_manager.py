@@ -13,10 +13,10 @@ def load_prompt(prompt_name: str) -> str:
     logger.info(f"Cargando el prompt: {prompt_name}")
     path = PROMPTS_DIR / prompt_name
 
-    # Lanzamos error si el fichero a encontrar no existe
     if not path.exists():
         logger.error(f"Plantilla no encontrada: {path}")
         raise PromptNotFoundError(f"Plantilla no encontrada: {path}")
+    
     logger.info("Prompt encontrado, se devuelve")
     return path.read_text(encoding="utf-8")
 
@@ -37,16 +37,11 @@ def get_prompt_name_for_analysis_type(analysis_type: str | None) -> str:
 
 
 # Funcion para construir un prompt a partir de una plantilla y argumentos
-# En **kwargs se pasan una lista de campos (en nuestro caso 1) y su valores
-# Estos campos se buscaran en el fichero de la plantilla y, para esos campos encontrados
-# se reemplazaran por los valores pasados en **kwargs.
-# Eg: Si en la plantilla pone {text} y en **kwargs se pasa text="Hola", entonces se reemplazara {text} por "Hola"
-# Esto lo realiza la funcion .format
 def build_prompt(analysis_type: str | None, **kwargs: str) -> str:
     logger.info("Construyendo el prompt")
     # Buscamos el prompt usando el tipo de analisis
     prompt_name = get_prompt_name_for_analysis_type(analysis_type)
-    # Una vez encontrado, lo cargamos
+
     template = load_prompt(prompt_name)
     try:
         logger.info("Devolviendo el prompt")
@@ -72,7 +67,6 @@ def get_input_text(tokenizer, analysis_type: str | None, text: str) -> str:
 
     try:
         # Modificamos nuestro texto + plantilla para agregar campos necesarios para la entrada
-        # Son etiquetas especiales necesitadas por el modelo
         logger.info("Aplicando etiquetas al prompt del modelo")
         input_text = tokenizer.apply_chat_template(
             messages,
@@ -81,8 +75,6 @@ def get_input_text(tokenizer, analysis_type: str | None, text: str) -> str:
         )
     except Exception as exc:
             logger.error(f"Error al aplicar chat_template: {exc}")
-            # Lanzamos nuestra excepcion
             raise PromptFormattingError(f"Error al preparar el formato del LLM: {exc}") from exc
-    
-    # Devolvemos si no hay ningun error
+
     return input_text

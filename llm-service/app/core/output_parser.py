@@ -22,23 +22,20 @@ def _find_json_by_braces(text: str) -> str | None:
     return None
 
 
-# Slicer que extrae el texto del JSON
+
 # Comprueba si sera un JSON valido, si no lo es, lanza una excepcion
-# La idea es encontrar que esta entre corchetes y luego parsearlo a un diccionario para asegurar la forma de la salida
 def extract_json(output_text: str) -> dict:
     logger.info("Iniciando la extraccion del JSON")
 
     # Intentamos obtener el texto generado en markdown y si no en llaves
-    # La idea es tener cuidado de si la respuesta viene en markdown o no
     json_text = _find_json_in_markdown(output_text) or _find_json_by_braces(output_text)
 
-    # Aqui se comprueba que el modelo es un JSON
+
     if not json_text:
         logger.error("El modelo no ha generado un JSON")
         raise InvalidModelOutputError("El modelo no ha devuelto un JSON")
 
-    # Aqui comprobamos que el texto extraido es un JSON valido, si no lo es, lanzamos una excepcion 
-    # Pasamos de json a un objeto python, si da error es porque el texto no es un JSON
+    # Comprobamos si el texto extraido es un JSON valido
     try:
         logger.info("Devolviendo el JSON extraido")
         # Con JSON repair nos aseguramos de que problemas posibles en el JSON, como comillas dobles/simples, comas extra, etc
@@ -57,14 +54,12 @@ def parse_and_validate_response(outputs, inputs, tokenizer) -> AnalysisResponse:
         logger.info("Decodificando la salida del modelo a texto legible")
         output_text = tokenizer.decode(generated_ids, skip_special_tokens=True)
     except Exception as exc:
-        logger.error("Error el pasar de token a texto legible")
+        logger.error("Error al pasar de token a texto legible")
         raise ModelInferenceError("Error al decodificar la salida del modelo") from exc
     # Extraemos el JSON de la respuesta del modelo y lo parseamos a un diccionario
     logger.info("Extrayendo el JSON de la respuesta del modelo")
     parsed = extract_json(output_text)
     # Intentamos crear el objeto AnalysisResponse directamente
-    # Pydantic se encargara de comprobar si faltan campos o si los tipos estan mal.
-    # Esto permite que sea escalable, sin tener que especificar en esta parte del codigo campos fijos
     try:
         logger.info("Devolviendo la respuesta del modelo")
         return AnalysisResponse(**parsed) 

@@ -1,7 +1,6 @@
 from fastapi import Request
 from fastapi.responses import JSONResponse
 
-# Importacion de los tipos de errores (excepciones) personalizadass
 from app.core.exceptions import (
     ModelNotLoadedError,
     ModelLoadError,

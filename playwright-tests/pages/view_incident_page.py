@@ -1,4 +1,3 @@
-# Importamos la clase base
 from .base_page import BasePage
 
 

@@ -22,11 +22,11 @@ def driver():
     chrome_options.add_argument("--disable-dev-shm-usage")
 
     if IN_DOCKER:
-        # CONFIGURACIÓN PARA DOCKER
+        # Configuracion para docker
         chrome_options.add_argument("--headless")
         driver = webdriver.Chrome(options=chrome_options)
     else:
-        # CONFIGURACIÓN PARA LOCAL
+        # Configuracion para local
         chrome_options.add_argument("--start-maximized")
         service = Service(ChromeDriverManager().install())
         driver = webdriver.Chrome(service=service, options=chrome_options)

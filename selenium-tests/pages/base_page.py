@@ -29,7 +29,7 @@ class BasePage:
         # Como por ejemplo que el elemento exista y ademas que sea visible, etc
         return self.wait.until(EC.presence_of_element_located((by, value)))
 
-    # Devuevle todos los elementos del tipo indicado con by y con la etiqueta indicada en value
+    # Devuelve todos los elementos del tipo indicado con by y con la etiqueta indicada en value
     def find_all(self, by, value):
         return self.wait.until(EC.presence_of_all_elements_located((by, value)))
 

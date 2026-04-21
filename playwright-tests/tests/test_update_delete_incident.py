@@ -1,4 +1,3 @@
-import json
 import pytest
 from playwright.sync_api import expect
 
@@ -9,10 +8,9 @@ from pages.view_incident_page import ViewIncidentPage
 
 # Funcion auxiliar que comprueba que una incidencia existe y que puede recuperarse por id
 def assert_incident_exists(view_page, incident_id, expected_title=None):
-    # Buscamos la incidencia
+
     view_page.search_incident_by_id(incident_id)
 
-    # Obtenemos feedback para asegurarnos de que se ha obtenido bien respuesta
     feedback_locator = view_page.get_search_feedback_locator()
 
     try:
@@ -21,7 +19,6 @@ def assert_incident_exists(view_page, incident_id, expected_title=None):
         error_busqueda = feedback_locator.inner_text()
         pytest.fail(f"No se pudo encontrar la incidencia {incident_id}: {error_busqueda}")
 
-    # Si todo va bien, hacemos los asserts finales de los datos
     response_text = view_page.get_search_response_locator().inner_text().lower()
     assert f'"id": {incident_id}' in response_text
 
@@ -31,10 +28,9 @@ def assert_incident_exists(view_page, incident_id, expected_title=None):
 
 # Funcion auxiliar que comprueba que una incidencia ya no existe
 def assert_incident_not_exists(view_page, incident_id):
-    # Buscamos la incidencia
+
     view_page.search_incident_by_id(incident_id)
 
-    # Obtenemos feedback para asegurarnos de que la web muestra error
     feedback_locator = view_page.get_search_feedback_locator()
 
     # La diferencia es que el "error" este caso es encontrar la incidencia
@@ -52,11 +48,11 @@ def assert_incident_not_exists(view_page, incident_id):
 
 # Funcion test que prueba la actualizacion general de una incidencia
 def test_update_incident(page, base_url, create_incident_id):
-    # Creamos la incidencia
+
     incident_id = create_incident_id["id"]
-    # Creamos la pagina de actualizar/borrar incidencias
+
     update_page = UpdateDeleteIncidentPage(page, base_url)
-    # Navegamos a la pagina
+
     update_page.goto()
 
     # Actualizamos campos de la incidencia
@@ -67,7 +63,7 @@ def test_update_incident(page, base_url, create_incident_id):
         status="in_progress"
     )
 
-    # Obtenemos feedback para asegurarnos de que se ha obtenido bien respuesta
+
     update_feedback_locator = update_page.get_update_feedback_locator()
 
     try:
@@ -76,7 +72,6 @@ def test_update_incident(page, base_url, create_incident_id):
         error_update = update_feedback_locator.inner_text()
         pytest.fail(f"Error al actualizar la incidencia {incident_id}: {error_update}")
 
-    # Si todo va bien, hacemos los asserts finales de los datos
     update_response = update_page.get_update_response_locator().inner_text().lower()
     assert f'"id": {incident_id}' in update_response
     assert '"title": "titulo actualizado"' in update_response
@@ -87,17 +82,15 @@ def test_update_incident(page, base_url, create_incident_id):
 
 # Funcion test que prueba la actualizacion unicamente del estado
 def test_update_incident_status(page, base_url, create_incident_id):
-    # Creamos la incidencia
+
     incident_id = create_incident_id["id"]
-    # Creamos la pagina de actualizar/borrar incidencias
+
     update_page = UpdateDeleteIncidentPage(page, base_url)
-    # Navegamos a la pagina
+
     update_page.goto()
 
-    # Actualizamos solo el estado
     update_page.update_status_only(incident_id, "closed")
 
-    # Obtenemos feedback para asegurarnos de que se ha obtenido bien respuesta
     status_feedback_locator = update_page.get_status_feedback_locator()
 
     try:
@@ -115,20 +108,17 @@ def test_update_incident_status(page, base_url, create_incident_id):
 
 # Funcion test que prueba el borrado de una incidencia
 def test_delete_incident(page, base_url, create_incident_id):
-    # Creamos la incidencia
+
     incident_id = create_incident_id["id"]
-    # Creamos la pagina de actualizar/borrar incidencias
+
     update_page = UpdateDeleteIncidentPage(page, base_url)
-    # Navegamos a la pagina
+
     update_page.goto()
 
-    # La actualizamos como cerrada
     update_page.update_status_only(incident_id, "closed")
 
-    # Borramos la incidencia
     update_page.delete_incident(incident_id)
 
-    # Obtenemos feedback para asegurarnos de que se ha obtenido bien respuesta
     delete_feedback_locator = update_page.get_delete_feedback_locator()
 
     try:

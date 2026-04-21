@@ -1,4 +1,3 @@
-# Tomamos la clase base
 from .base_page import BasePage
 
 # Creamos la clase con la clase base y es la pagina de crear una incidencia
@@ -12,11 +11,8 @@ class CreateIncidentPage(BasePage):
     # title: titulo de la incidencia, es lo que se va a introducir en el campo de la web
     # descripcion: descripcion de la incidencia
     def create_incident(self, title, description):
-        # Rellenar el campo con el tag #title con el titulo a introducir
         self.page.fill("#title", title)
-        # Similar pero con la descripccion
         self.page.fill("#description", description)
-        # Accedemos al boton de introducir incidencia
         self.page.click("button[type='submit']")
 
     # Funcion para evitar condiciones de carrera (intentamos comprobar algo que aun no ha terminado de hacerse)

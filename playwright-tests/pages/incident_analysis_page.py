@@ -5,14 +5,17 @@ class IncidentAnalysisPage(BasePage):
     # Para movernos a la pagina
     def goto(self):
         super().goto("/pages/incident-analysis.html")
+    
     # Rellenar campo de analizar incidencia y mandar a analizar
     def analyze_incident(self, incident_id):
         self.page.fill("#incident-analysis-id", str(incident_id))
         self.page.click("#incident-analysis-form button[type='submit']")
+    
     # Obtener incidencia por id
     def get_incident_analysis(self, incident_id):
         self.page.fill("#get-incident-analysis-id", str(incident_id))
         self.page.click("#get-incident-analysis-form button[type='submit']")
+    
     # Usar el modelo directamente
     def use_model(self, text, analysis_type=""):
         self.page.fill("#model-text", text)

@@ -43,9 +43,7 @@ def create_incident(data: IncidentCreateRequest, db: Session) -> Incident:
 
 # Obtiene todos los registros de la tabla de la bd
 def get_incidents(db: Session) -> List[Incident]:
-    # Para no mostrar toda la base de datos, ya que puede generar problemas de memoria, mostramos los ultimos 100
-    # Se podria aplicar paginacion y scroll infinito en el front si se desea de ver todo, pero para el proposito de
-    # este proyecto poner un limite es suficiente. Lo importante es controlar que a futuro no colapse el servidor
+    # Limite para evitar sobrecarga de memoria
     MAX_SAFETY_LIMIT = 100 
     logger.info(f"Obteniendo las últimas {MAX_SAFETY_LIMIT} incidencias")
     
@@ -58,7 +56,6 @@ def get_incident_by_id(incident_id: int, db: Session) -> Incident:
     
     incident = db_operations.get_by_id(db, incident_id)
 
-    # Aqui no hacemos try porque puede devolver un valor vacio, no un fallo como tal
     if incident is None:
         # WARNING porque aunque no sea un error del programa, es una busqueda fallida
         logger.warning(f"Incidencia no encontrada: ID {incident_id}")
@@ -77,10 +74,8 @@ def update_incident_status(incident_id: int, status: IncidentStatus, db: Session
     incident = get_incident_by_id(incident_id, db)
 
     # Si la encuentra, actualiza el estado
-    # Hasta aqui similar a al funcion anterior
     incident.status = status.value
-    
-    # Aqui si hacemos un try porque es acceso a la bd y modificacion
+
     saved_incident = db_operations.save(db, incident)
     
     logger.info(f"Estado de la incidencia con ID: {incident_id} actualizado")
@@ -90,14 +85,10 @@ def update_incident_status(incident_id: int, status: IncidentStatus, db: Session
 # Eliminar una incidencia dada su id
 def delete_incident(incident_id: int, db: Session) -> bool:
     logger.info(f"Eliminando incidencia con ID: {incident_id}")
-    # Similar a la funcion anterior
 
-    # Consultamos y vemos si existe
     incident = get_incident_by_id(incident_id, db)
 
     # Consultamos la regla de negocio sobre si se puede borrar
-    # Nota: Se lanzan aqui errores porque indicarlo en la regla no es correcto, no es su responsabilidad
-    # y llevarse esto a una clase seria redundante
     if not incident.can_be_deleted():
         logger.warning("Intento de borrado no permitido para incidencia id=%s", incident_id)
         raise BusinessRuleError(
@@ -105,7 +96,6 @@ def delete_incident(incident_id: int, db: Session) -> bool:
             "Solo se permite el borrado en estado CLOSED."
         )
 
-    # Si la encuentra, la eliminamos
     result = db_operations.delete(db, incident)
     
     logger.info(f"Incidencia eliminada con ID: {incident_id}")
@@ -115,10 +105,10 @@ def delete_incident(incident_id: int, db: Session) -> bool:
 # Actualiza por completo una incidencia segun el id
 def update_incident(incident_id: int, data: IncidentUpdateRequest, db: Session) -> Incident:
     logger.info(f"Actualizando incidencia con ID: {incident_id}")
-    # Similar a las funciones anteriores
+
     incident = get_incident_by_id(incident_id, db)
 
-    # La diferencia es que aqui asignamos valores antes de hacer el commit en la bd
+    # Asignamos valores antes de asignarlos a la bd
     if data.title is None and data.description is None and data.status is None:
         logger.error(f"No se recibieron campos para actualizar en la incidencia: {incident_id}")
         raise FieldError("Debes enviar al menos un campo para actualizar")
@@ -203,15 +193,12 @@ def analyze_incident(incident_id: int, db: Session) -> Incident:
 
 # Funciones privadas
 # Funciones concretas utilizadas en algunas de las funciones anteriores
-# Esta decision es recomendada en el libro "Clean Code" 
-# Son funciones que se usan de forma puntual y solo sirven para estos servicios
-# Por tanto, mejor dejarlas aqui y al final del fichero
 def _prepare_llm_text(incident: Incident) -> str:
     # Establecemos el texto a analizar, en este caso el titulo y la descripcion de la incidencia
     return f"Title: {incident.title}\nDescription: {incident.description}"
 
 def _get_llm_fallback_values(rules_result) -> IncidentAnalysisResponse:
-    # Fallback del LLM, se guarda como analis el resultado de las reglas
+    # Fallback del LLM, se guarda como analisis el resultado de las reglas
     # Ahora usamos el schema definido para la respuesta
     return IncidentAnalysisResponse(
         summary="Fallback: Sin resumen",
