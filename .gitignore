@@ -9,6 +9,7 @@ llm-service/.llm-venv
 playwright-tests/.playwright-venv
 selenium-tests/.selenium-venv
 
+
 __pycache__/
 *.py[cod]
 *$py.class
