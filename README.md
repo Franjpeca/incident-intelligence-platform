@@ -47,6 +47,8 @@ Adicionalmente, el proyecto incluye contenedores dedicados a testing de extremo 
 
 Ambos permiten validar el comportamiento completo del sistema dentro del entorno Docker.
 
+> Nota: Dentro de cada directorio de microservicios y tests se puede ver la estructura de carpetas en su correspondiente README
+
 
 
 ## 3. Componentes del sistema
